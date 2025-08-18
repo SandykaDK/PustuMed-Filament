@@ -7,8 +7,7 @@ use Filament\Panel;
 use Filament\Widgets;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
-use Filament\Livewire\Notifications;
-use Filament\Support\Enums\Alignment;
+use App\Filament\Pages\Auth\LoginPustu;
 use Filament\Http\Middleware\Authenticate;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -28,7 +27,16 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
-            ->login()
+
+            ->login(LoginPustu::class)
+            ->registration()
+            ->profile()
+            ->emailVerification()
+            ->passwordReset()
+
+            ->authGuard('web')
+            ->authPasswordBroker('users')
+
             ->colors([
                 'primary' => Color::Amber,
             ])
@@ -39,17 +47,30 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
+                // Widgets\AccountWidget::class,
+                // Widgets\FilamentInfoWidget::class,
             ])
             ->spa()
-            // ->topNavigation()
+
+            ->unsavedChangesAlerts()
+            ->databaseTransactions()
 
             ->brandName('PustuMed')
             ->brandLogo(asset('images/logo-pustumed-v2.png'))
             ->darkModeBrandLogo(asset('images/logo-pustumed-v2.png'))
             ->brandLogoHeight('3rem')
             ->favicon(asset('images/Logo-Pustumed.png'))
+            // ->topNavigation()
+
+            // ->font('Poppins')
+            ->colors([
+                'danger' => Color::Red,
+                'gray' => Color::Zinc,
+                'info' => Color::Blue,
+                'primary' => Color::Amber,
+                'success' => Color::Green,
+                'warning' => Color::Amber,
+            ])
 
             ->middleware([
                 EncryptCookies::class,
@@ -65,6 +86,7 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
-            ->sidebarCollapsibleOnDesktop();
+            ->sidebarCollapsibleOnDesktop()
+            ->sidebarWidth('18rem');
     }
 }

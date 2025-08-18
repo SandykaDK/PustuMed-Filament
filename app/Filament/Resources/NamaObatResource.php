@@ -21,7 +21,6 @@ use App\Filament\Resources\NamaObatResource\RelationManagers;
 class NamaObatResource extends Resource
 {
     protected static ?string $model = NamaObat::class;
-
     protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-list';
     protected static ?string $navigationLabel = 'Nama Obat';
     protected static ?string $navigationGroup = 'Master';
@@ -61,7 +60,8 @@ class NamaObatResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('kode_obat')
-                    ->label('Kode Obat'),
+                    ->label('Kode Obat')
+                    ->sortable(),
                 TextColumn::make('nama_obat')
                     ->label('Nama Obat')
                     ->searchable()
@@ -93,13 +93,6 @@ class NamaObatResource extends Resource
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
     }
 
     public static function getPages(): array

@@ -4,17 +4,16 @@ namespace App\Filament\Resources\LaporanStokResource\Pages;
 
 use App\Filament\Resources\LaporanStokResource;
 use Filament\Actions;
-use Filament\Resources\Pages\EditRecord;
+use Filament\Resources\Pages\ViewRecord;
 
-class EditLaporanStok extends EditRecord
+class ViewLaporanStok extends ViewRecord
 {
     protected static string $resource = LaporanStokResource::class;
 
     protected function getHeaderActions(): array
     {
         return [
-            Actions\ViewAction::make(),
-            Actions\DeleteAction::make(),
+            // Actions\EditAction::make(),
         ];
     }
 }

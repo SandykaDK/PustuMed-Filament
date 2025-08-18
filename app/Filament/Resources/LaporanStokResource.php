@@ -2,23 +2,19 @@
 
 namespace App\Filament\Resources;
 
-use Filament\Forms;
 use Filament\Tables;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use App\Models\LaporanStok;
-use Doctrine\DBAL\Schema\Column;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables\Columns\TextColumn;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Infolists\Components\TextEntry;
 use App\Filament\Resources\LaporanStokResource\Pages;
-use App\Filament\Resources\LaporanStokResource\RelationManagers;
 
 class LaporanStokResource extends Resource
 {
     protected static ?string $model = LaporanStok::class;
-
     protected static ?string $navigationIcon = 'heroicon-o-chart-bar';
     protected static ?string $navigationLabel = 'Laporan Stok';
     protected static ?string $navigationGroup = 'Laporan';
@@ -30,6 +26,27 @@ class LaporanStokResource extends Resource
         return $form
             ->schema([
                 //
+            ]);
+    }
+
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                TextEntry::make('namaObat.nama_obat')
+                    ->label('Nama Obat'),
+                TextEntry::make('stok_awal')
+                    ->label('Stok Awal'),
+                TextEntry::make('jumlah_masuk')
+                    ->label('Jumlah Masuk'),
+                TextEntry::make('jumlah_keluar')
+                    ->label('Jumlah Keluar'),
+                TextEntry::make('stok_akhir')
+                    ->label('Stok Akhir'),
+                TextEntry::make('lokasi_penyimpanan')
+                    ->label('Lokasi Penyimpanan'),
+                TextEntry::make('status_stok')
+                    ->label('Status Stok')
             ]);
     }
 
@@ -67,7 +84,7 @@ class LaporanStokResource extends Resource
                         'Tersedia' => 'success',
                         'Hampir Habis' => 'warning',
                         'Habis' => 'danger',
-                        'Kadaluarsa' => 'grey',
+                        'Kadaluwarsa' => 'grey',
                     })
                     ->sortable(),
             ])
@@ -75,7 +92,7 @@ class LaporanStokResource extends Resource
                 //
             ])
             ->actions([
-                // Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -96,6 +113,7 @@ class LaporanStokResource extends Resource
         return [
             'index' => Pages\ListLaporanStoks::route('/'),
             'create' => Pages\CreateLaporanStok::route('/create'),
+            'view' => Pages\ViewLaporanStok::route('/{record}'),
             'edit' => Pages\EditLaporanStok::route('/{record}/edit'),
         ];
     }

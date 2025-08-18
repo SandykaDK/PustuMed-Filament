@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\NamaObatResource\Pages;
 
-use Filament\Actions;
+
 use App\Models\LaporanStok;
 use Filament\Resources\Pages\CreateRecord;
 use App\Filament\Resources\NamaObatResource;
@@ -10,7 +10,6 @@ use App\Filament\Resources\NamaObatResource;
 class CreateNamaObat extends CreateRecord
 {
     protected static string $resource = NamaObatResource::class;
-
     protected function afterCreate()
     {
         LaporanStok::create([

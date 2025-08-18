@@ -5,8 +5,6 @@ namespace App\Filament\Resources;
 use Filament\Tables;
 use App\Models\NamaObat;
 use Filament\Forms\Form;
-use App\Models\JenisObat;
-use App\Models\SatuanObat;
 use Filament\Tables\Table;
 use App\Models\PenerimaanObat;
 use Filament\Resources\Resource;
@@ -18,6 +16,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\PenerimaanObatResource\Pages;
 use Filament\Forms\Components\Repeater;
+use Filament\Resources\Components\Tab;
 
 class PenerimaanObatResource extends Resource
 {

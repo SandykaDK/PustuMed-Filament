@@ -44,8 +44,11 @@ class JenisObatResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('kode_jenis'),
+                TextColumn::make('kode_jenis')
+                    ->sortable(),
                 TextColumn::make('jenis_obat')
+                    ->sortable()
+                    ->searchable()
             ])
             ->filters([
                 //
@@ -75,8 +78,8 @@ class JenisObatResource extends Resource
     {
         return [
             'index' => Pages\ListJenisObats::route('/'),
-            'create' => Pages\CreateJenisObat::route('/create'),
-            'edit' => Pages\EditJenisObat::route('/{record}/edit'),
+            // 'create' => Pages\CreateJenisObat::route('/create'),
+            // 'edit' => Pages\EditJenisObat::route('/{record}/edit'),
         ];
     }
 }
