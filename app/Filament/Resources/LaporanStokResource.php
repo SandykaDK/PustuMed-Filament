@@ -64,11 +64,9 @@ class LaporanStokResource extends Resource
                 TextColumn::make('jumlah_masuk')
                     ->label('Jumlah Masuk')
                     ->sortable(),
-
                 TextColumn::make('jumlah_keluar')
                     ->label('Jumlah Keluar')
                     ->sortable(),
-
                 TextColumn::make('stok_akhir')
                     ->label('Stok Akhir')
                     ->sortable(),
