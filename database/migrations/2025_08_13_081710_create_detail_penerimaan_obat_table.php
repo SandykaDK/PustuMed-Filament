@@ -11,7 +11,6 @@ return new class extends Migration
         Schema::create('detail_penerimaan_obat', function (Blueprint $table) {
             $table->id();
             $table->foreignId('penerimaan_obat_id')->constrained('penerimaan_obat', 'id');
-            $table->foreignId('supplier_id')->constrained('supplier_obat', 'id');
             $table->foreignId('nama_obat_id')->constrained('nama_obat', 'id');
             $table->date('tanggal_kadaluwarsa')->nullable();
             $table->integer('jumlah_masuk');

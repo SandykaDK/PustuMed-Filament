@@ -9,7 +9,6 @@ class DetailPenerimaanObat extends Model
     protected $table = 'detail_penerimaan_obat';
 
     protected $fillable = [
-        'supplier_id',
         'nama_obat_id',
         'jenis_obat_id',
         'no_batch',

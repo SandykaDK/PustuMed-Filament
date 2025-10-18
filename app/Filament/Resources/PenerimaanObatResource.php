@@ -16,7 +16,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\PenerimaanObatResource\Pages;
 use Filament\Forms\Components\Repeater;
-use Filament\Resources\Components\Tab;
 
 class PenerimaanObatResource extends Resource
 {
@@ -86,12 +85,6 @@ class PenerimaanObatResource extends Resource
                             ->numeric()
                             ->required(),
 
-                        // Supplier
-                        Select::make('supplier_id')
-                            ->label('Supplier')
-                            ->relationship('supplier', 'nama_supplier')
-                            ->required(),
-
                         // Lokasi Penyimpanan
                         TextInput::make('lokasi_penyimpanan')
                             ->label('Lokasi Penyimpanan')
@@ -124,6 +117,7 @@ class PenerimaanObatResource extends Resource
                 TextColumn::make('tanggal_penerimaan')
                     ->label('Tanggal Masuk')
                     ->sortable(),
+                    // ->toggleable(isToggledHiddenByDefault: true),
 
                 // Total Jumlah Obat Masuk
                 TextColumn::make('total_jumlah_masuk')
