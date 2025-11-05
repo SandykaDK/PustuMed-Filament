@@ -6,7 +6,6 @@ use Filament\Tables;
 use App\Models\NamaObat;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
-use App\Models\PenerimaanObat;
 use App\Models\PengeluaranObat;
 use Filament\Resources\Resource;
 use App\Models\DetailPenerimaanObat;

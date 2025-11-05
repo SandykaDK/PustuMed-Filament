@@ -2,21 +2,19 @@
 
 namespace App\Filament\Resources;
 
-use Filament\Forms;
 use Filament\Tables;
 use App\Models\NamaObat;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
-use PhpParser\Node\Stmt\Label;
 use Filament\Resources\Resource;
-use Filament\Tables\Columns\Column;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Tables\Filters\TrashedFilter;
 use App\Filament\Resources\NamaObatResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\NamaObatResource\RelationManagers;
 
 class NamaObatResource extends Resource
 {
@@ -77,15 +75,28 @@ class NamaObatResource extends Resource
                     ->sortable(),
             ])
             ->filters([
-                //
+                SelectFilter::make('jenis_obat_id')
+                    ->relationship('jenisObat', 'jenis_obat')
+                    ->label('Jenis Obat')
+                    ->searchable()
+                    ->preload(),
+                SelectFilter::make('satuan_obat_id')
+                    ->relationship('satuanObat', 'satuan_obat')
+                    ->label('Satuan Obat')
+                    ->preload(),
+                TrashedFilter::make(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ForceDeleteAction::make(),
+                Tables\Actions\RestoreAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\ForceDeleteBulkAction::make(),
+                    Tables\Actions\RestoreBulkAction::make(),
                 ]),
             ]);
     }
@@ -102,5 +113,13 @@ class NamaObatResource extends Resource
             'create' => Pages\CreateNamaObat::route('/create'),
             'edit' => Pages\EditNamaObat::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->withoutGlobalScopes([
+                SoftDeletingScope::class,
+            ]);
     }
 }
