@@ -23,6 +23,7 @@ class PenerimaanObatResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-arrow-down-on-square-stack';
     protected static ?string $navigationLabel = 'Penerimaan Obat';
+    protected static ?string $pluralModelLabel = 'Penerimaan Obat';
     protected static ?string $navigationGroup = 'Transaksi';
     protected static ?int $navigationSort = 1;
     protected static ?string $navigationBadgeTooltip = 'Jumlah Penerimaan Obat';

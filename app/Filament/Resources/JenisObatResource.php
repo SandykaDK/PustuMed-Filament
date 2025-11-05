@@ -18,9 +18,9 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class JenisObatResource extends Resource
 {
     protected static ?string $model = JenisObat::class;
-
     protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-list';
     protected static ?string $navigationLabel = 'Jenis Obat';
+    protected static ?string $pluralModelLabel = 'Jenis Obat';
     protected static ?string $navigationGroup = 'Master';
     protected static ?int $navigationSort = 1;
     protected static ?string $navigationBadgeTooltip = 'Jumlah Jenis Obat';

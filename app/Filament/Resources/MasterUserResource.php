@@ -21,6 +21,7 @@ class MasterUserResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
     protected static ?string $navigationLabel = 'Master User';
+    protected static ?string $pluralModelLabel = 'Master User';
     protected static ?string $navigationGroup = 'Master';
     protected static ?int $navigationSort = 4;
     protected static ?string $navigationBadgeTooltip = 'Jumlah User';

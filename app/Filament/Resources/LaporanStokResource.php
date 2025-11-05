@@ -17,6 +17,7 @@ class LaporanStokResource extends Resource
     protected static ?string $model = LaporanStok::class;
     protected static ?string $navigationIcon = 'heroicon-o-chart-bar';
     protected static ?string $navigationLabel = 'Laporan Stok';
+    protected static ?string $pluralModelLabel = 'Laporan Stok';
     protected static ?string $navigationGroup = 'Laporan';
     protected static ?int $navigationSort = 2;
     protected static ?string $navigationBadgeTooltip = 'Jumlah Laporan Stok';

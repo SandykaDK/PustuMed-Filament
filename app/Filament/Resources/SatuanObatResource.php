@@ -21,6 +21,7 @@ class SatuanObatResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-list';
     protected static ?string $navigationLabel = 'Satuan Obat';
+    protected static ?string $pluralModelLabel = 'Satuan Obat';
     protected static ?string $navigationGroup = 'Master';
     protected static ?int $navigationSort = 3;
     protected static ?string $navigationBadgeTooltip = 'Jumlah Satuan Obat';

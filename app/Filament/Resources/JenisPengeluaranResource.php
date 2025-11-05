@@ -16,6 +16,7 @@ class JenisPengeluaranResource extends Resource
     protected static ?string $model = JenisPengeluaran::class;
     protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-list';
     protected static ?string $navigationLabel = 'Jenis Pengeluaran';
+    protected static ?string $pluralModelLabel = 'Jenis Pengeluaran';
     protected static ?string $navigationGroup = 'Master';
     protected static ?int $navigationSort = 6;
     protected static ?string $navigationBadgeTooltip = 'Jumlah Jenis Pengeluaran';
