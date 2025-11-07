@@ -40,9 +40,9 @@ class PenerimaanObatResource extends Resource
                     ->required(), // Tambahkan Jam jika perlu (masih belum fix)
 
                 // User
-                Select::make('master_user_id')
+                Select::make('user_id')
                     ->label('User')
-                    ->relationship('masterUser', titleAttribute: 'nama_user')
+                    ->relationship('User', titleAttribute: 'name')
                     ->suffixIcon('heroicon-m-user-circle')
                     ->required(),
 

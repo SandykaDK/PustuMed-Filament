@@ -16,6 +16,8 @@ class LaporanStok extends Model
         'stok_akhir',
         'lokasi_penyimpanan',
         'tanggal_kadaluwarsa_terdekat',
+        'min_stock',
+        'max_stock',
         'status_stok'
     ];
 

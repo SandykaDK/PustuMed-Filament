@@ -3,9 +3,10 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
@@ -21,6 +22,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
+        'no_telepon'
     ];
 
     /**
@@ -38,11 +41,24 @@ class User extends Authenticatable
      *
      * @return array<string, string>
      */
+
+    use SoftDeletes;
+
     protected function casts(): array
     {
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function penerimaanObat()
+    {
+        return $this->hasMany(PenerimaanObat::class, 'user_id');
+    }
+
+    public function pengeluaranObat()
+    {
+        return $this->hasMany(PengeluaranObat::class, 'user_id');
     }
 }

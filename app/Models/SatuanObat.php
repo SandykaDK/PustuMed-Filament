@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class SatuanObat extends Model
 {
@@ -11,6 +12,8 @@ class SatuanObat extends Model
         'kode_satuan',
         'nama_satuan',
     ];
+
+    use SoftDeletes;
     public $timestamps = true;
 
         public function penerimaanObat()

@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources;
 
-use Filament\Forms;
 use Filament\Tables;
 use Filament\Forms\Form;
 use App\Models\JenisObat;
@@ -15,7 +14,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Contracts\Support\Htmlable;
 use App\Filament\Resources\JenisObatResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\JenisObatResource\RelationManagers;
 
 class JenisObatResource extends Resource
 {
@@ -48,8 +46,10 @@ class JenisObatResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('kode_jenis')
+                    ->label('Kode Jenis')
                     ->sortable(),
                 TextColumn::make('jenis_obat')
+                    ->label('Jenis Obat')
                     ->sortable()
                     ->searchable()
             ])
@@ -58,23 +58,21 @@ class JenisObatResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ForceDeleteAction::make(),
+                Tables\Actions\RestoreAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\ForceDeleteBulkAction::make(),
+                    Tables\Actions\RestoreBulkAction::make(),
                 ]),
             ]);
     }
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
     }
 
     public static function getPages(): array
@@ -84,6 +82,14 @@ class JenisObatResource extends Resource
             'create' => Pages\CreateJenisObat::route('/create'),
             'edit' => Pages\EditJenisObat::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->withoutGlobalScopes([
+                SoftDeletingScope::class,
+            ]);
     }
 
     public static function getGlobalSearchResultTitle(Model $record): string | Htmlable

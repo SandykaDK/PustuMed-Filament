@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class JenisPengeluaran extends Model
 {
@@ -14,6 +15,7 @@ class JenisPengeluaran extends Model
         'keterangan'
     ];
 
+    use SoftDeletes;
     public $timestamp = true;
 
     public function pengeluaranObat()

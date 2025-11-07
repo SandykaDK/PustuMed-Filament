@@ -13,6 +13,7 @@ return new class extends Migration
             $table->string('kode_pengeluaran')->unique();
             $table->string('jenis_pengeluaran');
             $table->string('keterangan')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

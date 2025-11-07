@@ -12,6 +12,7 @@ return new class extends Migration
             $table->id();
             $table->string('kode_jenis')->unique();
             $table->string('jenis_obat')->unique();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

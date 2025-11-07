@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Filament\Resources\SatuanObatResource\Pages;
+namespace App\Filament\Resources\UserResource\Pages;
 
 use Filament\Actions;
+use App\Filament\Resources\UserResource;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
-use App\Filament\Resources\SatuanObatResource;
 
-class EditSatuanObat extends EditRecord
+class EditUser extends EditRecord
 {
-    protected static string $resource = SatuanObatResource::class;
+    protected static string $resource = UserResource::class;
 
     protected function getHeaderActions(): array
     {
@@ -25,6 +25,6 @@ class EditSatuanObat extends EditRecord
         return Notification::make()
             ->success()
             ->title('Success')
-            ->body('Data Satuan Obat berhasil disimpan');
+            ->body('Data User berhasil disimpan');
     }
 }

@@ -10,10 +10,10 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             UserSeeder::class,
-            MasterUserSeeder::class,
             JenisObatSeeder::class,
             SatuanObatSeeder::class,
             NamaObatSeeder::class,
+            JenisPengeluaranSeeder::class,
         ]);
     }
 }

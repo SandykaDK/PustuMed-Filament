@@ -10,7 +10,9 @@ use Filament\Resources\Resource;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\JenisPengeluaranResource\Pages;
 
 class JenisPengeluaranResource extends Resource
@@ -20,7 +22,7 @@ class JenisPengeluaranResource extends Resource
     protected static ?string $navigationLabel = 'Jenis Pengeluaran';
     protected static ?string $pluralModelLabel = 'Jenis Pengeluaran';
     protected static ?string $navigationGroup = 'Master';
-    protected static ?int $navigationSort = 6;
+    protected static ?int $navigationSort = 3;
     protected static ?string $navigationBadgeTooltip = 'Jumlah Jenis Pengeluaran';
     protected static ?string $recordTitleAttribute = 'jenis_pengeluaran';
 
@@ -64,10 +66,14 @@ class JenisPengeluaranResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ForceDeleteAction::make(),
+                Tables\Actions\RestoreAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\ForceDeleteBulkAction::make(),
+                    Tables\Actions\RestoreBulkAction::make(),
                 ]),
             ]);
     }
@@ -91,6 +97,14 @@ class JenisPengeluaranResource extends Resource
             'create' => Pages\CreateJenisPengeluaran::route('/create'),
             'edit' => Pages\EditJenisPengeluaran::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->withoutGlobalScopes([
+                SoftDeletingScope::class,
+            ]);
     }
 
     public static function getGlobalSearchResultTitle(Model $record): string | Htmlable

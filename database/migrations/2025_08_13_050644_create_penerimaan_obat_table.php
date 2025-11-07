@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->string('no_batch');
             $table->date('tanggal_penerimaan');
-            $table->foreignId('master_user_id')->constrained('master_user', 'id');
+            $table->foreignId('user_id')->constrained('users', 'id');
             $table->softDeletes();
             $table->timestamps();
         });

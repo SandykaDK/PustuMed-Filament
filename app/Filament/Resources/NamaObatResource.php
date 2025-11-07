@@ -21,11 +21,11 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class NamaObatResource extends Resource
 {
     protected static ?string $model = NamaObat::class;
-    protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-list';
-    protected static ?string $navigationLabel = 'Nama Obat';
-    protected static ?string $pluralModelLabel = 'Nama Obat';
+    protected static ?string $navigationIcon = 'heroicon-o-computer-desktop';
+    protected static ?string $navigationLabel = 'Daftar Obat';
+    protected static ?string $pluralModelLabel = 'Daftar Obat';
     protected static ?string $navigationGroup = 'Master';
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 6;
     protected static ?string $navigationBadgeTooltip = 'Jumlah Nama Obat';
     protected static ?string $recordTitleAttribute = 'nama_obat';
     public static function form(Form $form): Form
@@ -74,9 +74,17 @@ class NamaObatResource extends Resource
                 TextColumn::make('satuanObat.satuan_obat')
                     ->label('Satuan Obat')
                     ->sortable(),
+                TextColumn::make('stok_minimum')
+                    ->label('Stok Minimum')
+                    ->sortable(),
+                TextColumn::make('stok_maksimum')
+                    ->label('Stok Maksimum')
+                    ->sortable(),
                 TextColumn::make('lokasi_penyimpanan')
                     ->label('Lokasi Penyimpanan')
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable()
+                    ->toggledHiddenByDefault(),
             ])
             ->filters([
                 SelectFilter::make('jenis_obat_id')

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class JenisObat extends Model
 {
@@ -12,6 +13,8 @@ class JenisObat extends Model
         'kode_jenis',
         'jenis_obat',
     ];
+
+    use SoftDeletes;
 
     public $timestamps = true;
 

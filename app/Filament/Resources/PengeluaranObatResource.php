@@ -38,9 +38,9 @@ class PengeluaranObatResource extends Resource
                     ->required(),
 
                 // User
-                Select::make('master_user_id')
+                Select::make('user_id')
                     ->label('User')
-                    ->relationship('masterUser', 'nama_user')
+                    ->relationship('User', 'name')
                     ->suffixIcon('heroicon-m-user-circle')
                     ->required(),
 

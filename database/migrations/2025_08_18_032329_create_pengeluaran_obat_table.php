@@ -13,7 +13,7 @@ return new class extends Migration
             $table->string('no_batch');
             $table->date('tanggal_pengeluaran');
             $table->string('tujuan_pengeluaran');
-            $table->foreignId('master_user_id')->constrained('master_user', 'id');
+            $table->foreignId('user_id')->constrained('users', 'id');
             $table->string('keterangan')->nullable();
             $table->softDeletes();
             $table->timestamps();

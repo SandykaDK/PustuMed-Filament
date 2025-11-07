@@ -1,16 +1,16 @@
 <?php
 
-namespace App\Filament\Resources\JenisObatResource\Pages;
+namespace App\Filament\Resources\UserResource\Pages;
 
-use App\Filament\Resources\JenisObatResource;
 use Filament\Actions;
+use Filament\Resources\Components\Tab;
+use App\Filament\Resources\UserResource;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Database\Eloquent\Builder;
-use Filament\Resources\Components\Tab;
 
-class ListJenisObats extends ListRecords
+class ListUsers extends ListRecords
 {
-    protected static string $resource = JenisObatResource::class;
+    protected static string $resource = UserResource::class;
 
     protected function getHeaderActions(): array
     {

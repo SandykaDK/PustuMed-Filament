@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources;
 
-use Filament\Forms;
 use Filament\Tables;
 use Filament\Forms\Form;
 use App\Models\SatuanObat;
@@ -15,7 +14,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\SatuanObatResource\Pages;
-use App\Filament\Resources\SatuanObatResource\RelationManagers;
 
 class SatuanObatResource extends Resource
 {
@@ -24,7 +22,7 @@ class SatuanObatResource extends Resource
     protected static ?string $navigationLabel = 'Satuan Obat';
     protected static ?string $pluralModelLabel = 'Satuan Obat';
     protected static ?string $navigationGroup = 'Master';
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 2;
     protected static ?string $navigationBadgeTooltip = 'Jumlah Satuan Obat';
     protected static ?string $recordTitleAttribute = 'satuan_obat';
 
@@ -60,10 +58,15 @@ class SatuanObatResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ForceDeleteAction::make(),
+                Tables\Actions\RestoreAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\ForceDeleteBulkAction::make(),
+                    Tables\Actions\RestoreBulkAction::make(),
                 ]),
             ]);
     }
@@ -71,13 +74,6 @@ class SatuanObatResource extends Resource
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
     }
 
     public static function getPages(): array
@@ -92,5 +88,13 @@ class SatuanObatResource extends Resource
     public static function getGlobalSearchResultTitle(Model $record): string | Htmlable
     {
         return $record->satuan_obat;
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->withoutGlobalScopes([
+                SoftDeletingScope::class,
+            ]);
     }
 }

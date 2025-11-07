@@ -12,7 +12,7 @@ class PenerimaanObat extends Model
     protected $fillable = [
         'no_batch',
         'tanggal_penerimaan',
-        'master_user_id',
+        'user_id',
     ];
     public $timestamps = true;
 
@@ -27,9 +27,9 @@ class PenerimaanObat extends Model
         });
     }
 
-    public function masterUser()
+    public function User()
     {
-        return $this->belongsTo(MasterUser::class, 'master_user_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function detailPenerimaanObat()

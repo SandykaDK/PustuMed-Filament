@@ -15,6 +15,8 @@ class NamaObat extends Model
         'jenis_obat_id',
         'satuan_obat_id',
         'lokasi_penyimpanan',
+        'stok_minimum',
+        'stok_maksimum'
     ];
 
     use SoftDeletes;

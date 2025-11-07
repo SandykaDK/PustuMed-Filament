@@ -13,7 +13,7 @@ class PengeluaranObat extends Model
         'no_batch',
         'tanggal_pengeluaran',
         'tujuan_pengeluaran',
-        'master_user_id',
+        'user_id',
         'keterangan'
     ];
     public $timestamps = true;
@@ -29,9 +29,9 @@ class PengeluaranObat extends Model
         });
     }
 
-    public function masterUser()
+    public function User()
     {
-        return $this->belongsTo(MasterUser::class, 'master_user_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function detailPengeluaranObat()

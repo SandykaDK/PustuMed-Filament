@@ -12,6 +12,7 @@ return new class extends Migration
             $table->id();
             $table->string('kode_satuan')->unique();
             $table->string('satuan_obat');
+            $table->softDeletes();
             $table->timestamps();
         });
     }
