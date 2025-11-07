@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources\NamaObatResource\Pages;
 
-
 use App\Models\LaporanStok;
+use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
 use App\Filament\Resources\NamaObatResource;
 
@@ -24,8 +24,16 @@ class CreateNamaObat extends CreateRecord
         ]);
     }
 
-    // protected function getCreatedNotificationTitle(): ?string
-    // {
-    //     return 'Data Obat berhasil disimpan';
-    // }
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
+
+    protected function getCreatedNotification(): ?Notification
+    {
+        return Notification::make()
+            ->success()
+            ->title('Success')
+            ->body('Data Nama Obat berhasil disimpan');
+    }
 }

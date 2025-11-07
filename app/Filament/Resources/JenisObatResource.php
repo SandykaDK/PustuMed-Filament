@@ -2,18 +2,20 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\JenisObatResource\Pages;
-use App\Filament\Resources\JenisObatResource\RelationManagers;
-use App\Models\JenisObat;
 use Filament\Forms;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Form;
+use App\Models\JenisObat;
 use Filament\Tables\Table;
+use Filament\Resources\Resource;
+use Filament\Tables\Columns\TextColumn;
+use Illuminate\Database\Eloquent\Model;
+use Filament\Forms\Components\TextInput;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Contracts\Support\Htmlable;
+use App\Filament\Resources\JenisObatResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\JenisObatResource\RelationManagers;
 
 class JenisObatResource extends Resource
 {
@@ -24,6 +26,7 @@ class JenisObatResource extends Resource
     protected static ?string $navigationGroup = 'Master';
     protected static ?int $navigationSort = 1;
     protected static ?string $navigationBadgeTooltip = 'Jumlah Jenis Obat';
+    protected static ?string $recordTitleAttribute = 'jenis_obat';
 
     public static function form(Form $form): Form
     {
@@ -78,8 +81,13 @@ class JenisObatResource extends Resource
     {
         return [
             'index' => Pages\ListJenisObats::route('/'),
-            // 'create' => Pages\CreateJenisObat::route('/create'),
-            // 'edit' => Pages\EditJenisObat::route('/{record}/edit'),
+            'create' => Pages\CreateJenisObat::route('/create'),
+            'edit' => Pages\EditJenisObat::route('/{record}/edit'),
         ];
+    }
+
+    public static function getGlobalSearchResultTitle(Model $record): string | Htmlable
+    {
+        return $record->jenis_obat;
     }
 }

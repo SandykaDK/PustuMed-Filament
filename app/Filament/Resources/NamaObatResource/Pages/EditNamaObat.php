@@ -2,9 +2,10 @@
 
 namespace App\Filament\Resources\NamaObatResource\Pages;
 
-use App\Filament\Resources\NamaObatResource;
 use Filament\Actions;
+use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
+use App\Filament\Resources\NamaObatResource;
 
 class EditNamaObat extends EditRecord
 {
@@ -17,5 +18,13 @@ class EditNamaObat extends EditRecord
             Actions\ForceDeleteAction::make(),
             Actions\RestoreAction::make(),
         ];
+    }
+
+    protected function getSavedNotification(): ?Notification
+    {
+        return Notification::make()
+            ->success()
+            ->title('Success')
+            ->body('Data Nama Obat berhasil disimpan');
     }
 }

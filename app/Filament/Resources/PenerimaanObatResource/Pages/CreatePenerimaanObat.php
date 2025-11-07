@@ -49,6 +49,11 @@ class CreatePenerimaanObat extends CreateRecord
         }
     }
 
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
+
     // protected function getCreatedNotificationTitle(): ?string
     // {
     //     return 'Data Penerimaan Obat berhasil disimpan';

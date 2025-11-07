@@ -2,16 +2,24 @@
 
 namespace App\Filament\Resources\JenisObatResource\Pages;
 
-use App\Filament\Resources\JenisObatResource;
-use Filament\Actions;
+use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
+use App\Filament\Resources\JenisObatResource;
 
 class CreateJenisObat extends CreateRecord
 {
     protected static string $resource = JenisObatResource::class;
 
-    protected function getCreatedNotificationTitle(): ?string
+    protected function getCreatedNotification(): ?Notification
     {
-        return 'Data Jenis Obat berhasil disimpan';
+        return Notification::make()
+            ->success()
+            ->title('Success')
+            ->body('Data Jenis Obat berhasil disimpan');
+    }
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
     }
 }

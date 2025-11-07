@@ -8,7 +8,9 @@ use Filament\Tables\Table;
 use App\Models\JenisPengeluaran;
 use Filament\Resources\Resource;
 use Filament\Tables\Columns\TextColumn;
+use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
+use Illuminate\Contracts\Support\Htmlable;
 use App\Filament\Resources\JenisPengeluaranResource\Pages;
 
 class JenisPengeluaranResource extends Resource
@@ -20,6 +22,7 @@ class JenisPengeluaranResource extends Resource
     protected static ?string $navigationGroup = 'Master';
     protected static ?int $navigationSort = 6;
     protected static ?string $navigationBadgeTooltip = 'Jumlah Jenis Pengeluaran';
+    protected static ?string $recordTitleAttribute = 'jenis_pengeluaran';
 
     public static function form(Form $form): Form
     {
@@ -88,5 +91,10 @@ class JenisPengeluaranResource extends Resource
             'create' => Pages\CreateJenisPengeluaran::route('/create'),
             'edit' => Pages\EditJenisPengeluaran::route('/{record}/edit'),
         ];
+    }
+
+    public static function getGlobalSearchResultTitle(Model $record): string | Htmlable
+    {
+        return $record->jenis_pengeluaran;
     }
 }

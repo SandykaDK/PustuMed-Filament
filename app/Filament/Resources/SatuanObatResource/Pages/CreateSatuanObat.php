@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\SatuanObatResource\Pages;
 
 use App\Filament\Resources\SatuanObatResource;
-use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateSatuanObat extends CreateRecord
@@ -12,5 +11,10 @@ class CreateSatuanObat extends CreateRecord
     protected function getCreatedNotificationTitle(): ?string
     {
         return 'Data Satuan Obat berhasil disimpan';
+    }
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
     }
 }
