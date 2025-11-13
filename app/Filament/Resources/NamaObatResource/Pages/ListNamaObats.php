@@ -2,11 +2,14 @@
 
 namespace App\Filament\Resources\NamaObatResource\Pages;
 
-use Filament\Actions;
 use App\Models\NamaObat;
+use Filament\Actions\CreateAction;
+use Filament\Actions\ExportAction;
+use Filament\Actions\Exports\Enums\ExportFormat;
 use Filament\Resources\Components\Tab;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Exports\NamaObatExporter;
 use App\Filament\Resources\NamaObatResource;
 
 class ListNamaObats extends ListRecords
@@ -16,10 +19,17 @@ class ListNamaObats extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make()
+            CreateAction::make()
                 ->label('Tambah')
                 ->icon('heroicon-o-plus')
                 ->color('success'),
+            // ExportAction::make()
+            //     ->exporter(NamaObatExporter::class)
+            //     ->icon('heroicon-o-arrow-down-tray')
+            //     ->color('success')
+            //     ->formats([
+            //         ExportFormat::Xlsx,
+            //     ])
         ];
     }
 

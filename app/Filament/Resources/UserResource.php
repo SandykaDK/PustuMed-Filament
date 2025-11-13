@@ -12,6 +12,7 @@ use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Contracts\Support\Htmlable;
 use App\Filament\Resources\UserResource\Pages;
@@ -27,7 +28,6 @@ class UserResource extends Resource
     protected static ?int $navigationSort = 4;
     protected static ?string $navigationBadgeTooltip = 'Jumlah User';
     protected static ?string $recordTitleAttribute = 'name';
-
     public static function form(Form $form): Form
     {
         return $form
@@ -100,6 +100,11 @@ class UserResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
+                SelectFilter::make('role')
+                    ->options([
+                        'petugas_pustu' => 'Petugas Pustu',
+                        'kepala_pustu' => 'Kepala Pustu',
+                    ]),
                 // Tables\Filters\TrashedFilter::make(),
             ])
             ->actions([
@@ -139,7 +144,7 @@ class UserResource extends Resource
             ]);
     }
 
-    public static function getGlobalSearchResultTitle(Model $record): string | Htmlable
+    public static function getGlobalSearchResultTitle(Model $record): string
     {
         return $record->name;
     }

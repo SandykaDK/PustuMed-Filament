@@ -2,17 +2,21 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Exports\NamaObatExporter;
 use Filament\Tables;
 use App\Models\NamaObat;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
+use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Actions\ExportAction;
 use Filament\Tables\Filters\TrashedFilter;
 use Illuminate\Contracts\Support\Htmlable;
 use App\Filament\Resources\NamaObatResource\Pages;
@@ -86,6 +90,10 @@ class NamaObatResource extends Resource
                     ->toggleable()
                     ->toggledHiddenByDefault(),
             ])
+            // ->headerActions([
+            //     ExportAction::make()
+            //         ->exporter(NamaObatExporter::class),
+            // ])
             ->filters([
                 SelectFilter::make('jenis_obat_id')
                     ->relationship('jenisObat', 'jenis_obat')

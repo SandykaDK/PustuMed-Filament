@@ -9,6 +9,7 @@ use Filament\Tables\Table;
 use App\Models\PengeluaranObat;
 use Filament\Resources\Resource;
 use App\Models\DetailPenerimaanObat;
+use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Repeater;
 use Filament\Tables\Columns\TextColumn;
@@ -42,6 +43,8 @@ class PengeluaranObatResource extends Resource
                     ->label('User')
                     ->relationship('User', 'name')
                     ->suffixIcon('heroicon-m-user-circle')
+                    ->default(Auth::user()->id)
+                    ->disabled()
                     ->required(),
 
                 // Tujuan Pengeluaran

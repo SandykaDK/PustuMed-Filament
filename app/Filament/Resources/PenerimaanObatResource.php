@@ -8,6 +8,7 @@ use Filament\Forms\Form;
 use Filament\Tables\Table;
 use App\Models\PenerimaanObat;
 use Filament\Resources\Resource;
+use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
@@ -44,7 +45,8 @@ class PenerimaanObatResource extends Resource
                     ->label('User')
                     ->relationship('User', titleAttribute: 'name')
                     ->suffixIcon('heroicon-m-user-circle')
-                    ->required(),
+                    ->default(Auth::user()->id)
+                    ->disabled(),
 
                 Repeater::make('detailPenerimaanObat')
                     ->label('Detail Penerimaan Obat')
