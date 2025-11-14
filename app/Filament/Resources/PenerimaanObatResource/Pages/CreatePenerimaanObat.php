@@ -13,6 +13,7 @@ class CreatePenerimaanObat extends CreateRecord
     protected function afterCreate(): void
     {
         $this->calculateMinMaxStock();
+        $this->updateStockFromPenerimaan();
     }
 
     protected function calculateMinMaxStock(): void
@@ -30,24 +31,32 @@ class CreatePenerimaanObat extends CreateRecord
                 continue;
             }
 
-            // Ambil data penjualan/pengeluaran untuk perhitungan
+            // Ambil rata-rata pengeluaran 30 hari terakhir (sekarang lebih fresh)
             $rataRataPengeluaran = $this->getRataRataPengeluaran($namaObat->id);
+
+            // Jika masih 0, gunakan jumlah saat ini (coba beberapa atribut umum, default 10)
+            if ($rataRataPengeluaran == 0) {
+                $rataRataPengeluaran = $detail->jumlah ?? $detail->jumlah_terima ?? $detail->jumlah_masuk ?? 10;
+            }
+
+            // Pemakaian maksimum per hari (30 hari terakhir)
+            $maxPerDay = $this->getPemakaianMaksimumPerHari($namaObat->id);
+
             $leadTime = $namaObat->lead_time ?? 7;
-            $safetyFactor = 1.5;
 
-            // Perhitungan Safety Stock
-            $safetyStock = (int) ceil($rataRataPengeluaran * $safetyFactor);
+            // Safety Stock = (Pengeluaran maksimum perhari - pemakaian rata rata) * lead time
+            $safetyStockCalc = ($maxPerDay - $rataRataPengeluaran) * $leadTime;
+            $safetyStock = (int) ceil(max(0, $safetyStockCalc));
 
-            // Perhitungan Reorder Point (ROP)
-            $reorderPoint = (int) ceil(($rataRataPengeluaran * $leadTime) + $safetyStock);
+            // Minimum Stock
+            $minimumStock = (int) ceil(($rataRataPengeluaran * $leadTime) + $safetyStock);
 
-            // Perhitungan Minimum Stock
-            $minimumStock = $reorderPoint;
+            // Maximum Stock
+            $maximumStock = (int) ceil(2 * ($rataRataPengeluaran * $leadTime) + $safetyStock);
 
-            // Perhitungan Maximum Stock
-            $maximumStock = (int) ceil($reorderPoint * 3);
+            // Reorder Point (ROP)
+            $reorderPoint = (int) ceil($maximumStock - $minimumStock);
 
-            // Update atau create di tabel min_max
             $namaObat->minMax()->updateOrCreate(
                 ['nama_obat_id' => $namaObat->id],
                 [
@@ -61,6 +70,27 @@ class CreatePenerimaanObat extends CreateRecord
         }
     }
 
+    protected function updateStockFromPenerimaan(): void
+    {
+        $penerimaan = $this->record;
+
+        if (! $penerimaan->detailPenerimaanObat) {
+            return;
+        }
+
+        foreach ($penerimaan->detailPenerimaanObat as $detail) {
+            $namaObatId = $detail->nama_obat_id ?? ($detail->namaObat->id ?? null);
+            $qty = (int) ($detail->jumlah ?? $detail->jumlah_terima ?? $detail->jumlah_masuk ?? 0);
+
+            if (! $namaObatId || $qty <= 0) {
+                continue;
+            }
+
+            // Increment stok secara atomic
+            DB::table('nama_obat')->where('id', $namaObatId)->increment('stok', $qty);
+        }
+    }
+
     protected function getRataRataPengeluaran($namaObatId): float
     {
         // Ambil rata-rata pengeluaran 30 hari terakhir
@@ -71,6 +101,20 @@ class CreatePenerimaanObat extends CreateRecord
             ->avg('detail_pengeluaran_obat.jumlah_keluar');
 
         return $rataRata ?? 0; // Default 0 jika belum ada data
+    }
+
+    protected function getPemakaianMaksimumPerHari($namaObatId): float
+    {
+        $maxDaily = DB::table('detail_pengeluaran_obat')
+            ->join('pengeluaran_obat', 'detail_pengeluaran_obat.pengeluaran_obat_id', '=', 'pengeluaran_obat.id')
+            ->where('detail_pengeluaran_obat.nama_obat_id', $namaObatId)
+            ->where('pengeluaran_obat.tanggal_pengeluaran', '>=', now()->subDays(30))
+            ->selectRaw('SUM(detail_pengeluaran_obat.jumlah_keluar) as daily_total, DATE(pengeluaran_obat.tanggal_pengeluaran) as day')
+            ->groupBy(DB::raw('DATE(pengeluaran_obat.tanggal_pengeluaran)'))
+            ->pluck('daily_total')
+            ->max();
+
+        return (float) ($maxDaily ?? 0);
     }
 
     protected function getRedirectUrl(): string

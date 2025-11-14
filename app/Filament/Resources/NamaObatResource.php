@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Exports\NamaObatExporter;
 use Filament\Tables;
 use App\Models\NamaObat;
 use Filament\Forms\Form;
@@ -14,10 +13,12 @@ use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
-use Filament\Actions\ExportAction;
 use Illuminate\Contracts\Support\Htmlable;
 use App\Filament\Resources\NamaObatResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\NamaObatResource\Widgets\DetailObatChart;
+use App\Filament\Resources\NamaObatResource\Widgets\HistoryPenerimaanObat;
+use App\Filament\Resources\NamaObatResource\Widgets\HistoryPengeluaranObat;
 
 class NamaObatResource extends Resource
 {
@@ -80,6 +81,9 @@ class NamaObatResource extends Resource
                     ->sortable()
                     ->toggleable()
                     ->toggledHiddenByDefault(),
+                TextColumn::make('stok')
+                    ->label('Stok')
+                    ->sortable(),
                 TextColumn::make('minMax.minimum_stock')
                     ->label('Stok Minimum')
                     ->sortable(),
@@ -137,6 +141,15 @@ class NamaObatResource extends Resource
             'index' => Pages\ListNamaObats::route('/'),
             'create' => Pages\CreateNamaObat::route('/create'),
             'edit' => Pages\EditNamaObat::route('/{record}/edit'),
+        ];
+    }
+
+    public static function getWidgets(): array
+    {
+        return [
+            HistoryPenerimaanObat::class,
+            HistoryPengeluaranObat::class,
+            DetailObatChart::class,
         ];
     }
 
