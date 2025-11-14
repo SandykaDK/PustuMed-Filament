@@ -14,8 +14,6 @@ return new class extends Migration
             $table->string('nama_obat')->unique();
             $table->foreignId('jenis_obat_id')->constrained('jenis_obat', 'id');
             $table->foreignId('satuan_obat_id')->constrained('satuan_obat', 'id');
-            $table->integer('stok_minimum')->nullable();
-            $table->integer('stok_maksimum')->nullable();
             $table->string('lokasi_penyimpanan')->nullable();
             $table->softDeletes();
             $table->timestamps();

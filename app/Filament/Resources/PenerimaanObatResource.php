@@ -45,8 +45,8 @@ class PenerimaanObatResource extends Resource
                     ->label('User')
                     ->relationship('User', titleAttribute: 'name')
                     ->suffixIcon('heroicon-m-user-circle')
-                    ->default(Auth::user()->id)
-                    ->disabled(),
+                    ->default(Auth::user()->id),
+                    // ->disabled(),
 
                 Repeater::make('detailPenerimaanObat')
                     ->label('Detail Penerimaan Obat')

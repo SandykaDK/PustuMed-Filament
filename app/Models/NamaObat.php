@@ -15,8 +15,6 @@ class NamaObat extends Model
         'jenis_obat_id',
         'satuan_obat_id',
         'lokasi_penyimpanan',
-        'stok_minimum',
-        'stok_maksimum'
     ];
 
     use SoftDeletes;
@@ -36,5 +34,10 @@ class NamaObat extends Model
     public function satuanObat()
     {
         return $this->belongsTo(SatuanObat::class, 'satuan_obat_id');
+    }
+
+    public function minMax()
+    {
+        return $this->hasOne(MinMax::class, 'nama_obat_id');
     }
 }

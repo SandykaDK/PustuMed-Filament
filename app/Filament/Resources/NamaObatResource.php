@@ -8,16 +8,13 @@ use App\Models\NamaObat;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
-use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Actions\ExportAction;
-use Filament\Tables\Filters\TrashedFilter;
 use Illuminate\Contracts\Support\Htmlable;
 use App\Filament\Resources\NamaObatResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -78,17 +75,26 @@ class NamaObatResource extends Resource
                 TextColumn::make('satuanObat.satuan_obat')
                     ->label('Satuan Obat')
                     ->sortable(),
-                TextColumn::make('stok_minimum')
-                    ->label('Stok Minimum')
-                    ->sortable(),
-                TextColumn::make('stok_maksimum')
-                    ->label('Stok Maksimum')
-                    ->sortable(),
                 TextColumn::make('lokasi_penyimpanan')
                     ->label('Lokasi Penyimpanan')
                     ->sortable()
                     ->toggleable()
                     ->toggledHiddenByDefault(),
+                TextColumn::make('minMax.minimum_stock')
+                    ->label('Stok Minimum')
+                    ->sortable(),
+                TextColumn::make('minMax.maximum_stock')
+                    ->label('Stok Maksimum')
+                    ->sortable(),
+                TextColumn::make('minMax.safety_stock')
+                    ->label('Safety Stock')
+                    ->sortable(),
+                TextColumn::make('minMax.reorder_point')
+                    ->label('Reorder Point')
+                    ->sortable(),
+                TextColumn::make('minMax.lead_time')
+                    ->label('Lead Time (hari)')
+                    ->sortable(),
             ])
             // ->headerActions([
             //     ExportAction::make()

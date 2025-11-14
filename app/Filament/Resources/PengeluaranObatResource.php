@@ -44,7 +44,7 @@ class PengeluaranObatResource extends Resource
                     ->relationship('User', 'name')
                     ->suffixIcon('heroicon-m-user-circle')
                     ->default(Auth::user()->id)
-                    ->disabled()
+                    // ->disabled()
                     ->required(),
 
                 // Tujuan Pengeluaran
