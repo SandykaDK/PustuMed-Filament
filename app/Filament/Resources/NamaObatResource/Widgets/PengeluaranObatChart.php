@@ -2,15 +2,15 @@
 
 namespace App\Filament\Resources\NamaObatResource\Widgets;
 
-use App\Models\PenerimaanObat;
+use App\Models\PengeluaranObat;
 use Filament\Widgets\ChartWidget;
 use Illuminate\Support\Facades\Auth;
 
-class DetailObatChart extends ChartWidget
+class PengeluaranObatChart extends ChartWidget
 {
-    protected static ?string $heading = 'Penerimaan Obat Per Bulan';
-    protected static ?int $sort = 3;
-    protected int | string | array $columnSpan = 'full';
+    protected static ?string $heading = 'Pengeluaran Obat Per Bulan';
+    protected static ?int $sort = 4;
+    protected int | string | array $columnSpan = '1';
     public ?string $filter = null;
 
     protected function getData(): array
@@ -19,9 +19,9 @@ class DetailObatChart extends ChartWidget
             ? (int) str_replace('year_', '', $this->filter)
             : now()->year;
 
-        $data = PenerimaanObat::join('detail_penerimaan_obat', 'penerimaan_obat.id', '=', 'detail_penerimaan_obat.penerimaan_obat_id')
-            ->selectRaw('MONTH(penerimaan_obat.tanggal_penerimaan) as bulan, SUM(detail_penerimaan_obat.jumlah_masuk) as total')
-            ->whereYear('penerimaan_obat.tanggal_penerimaan', $selectedYear)
+        $data = PengeluaranObat::join('detail_pengeluaran_obat', 'pengeluaran_obat.id', '=', 'detail_pengeluaran_obat.pengeluaran_obat_id')
+            ->selectRaw('MONTH(pengeluaran_obat.tanggal_pengeluaran) as bulan, SUM(detail_pengeluaran_obat.jumlah_keluar) as total')
+            ->whereYear('pengeluaran_obat.tanggal_pengeluaran', $selectedYear)
             ->groupBy('bulan')
             ->orderBy('bulan')
             ->get();
@@ -36,7 +36,7 @@ class DetailObatChart extends ChartWidget
         return [
             'datasets' => [
                 [
-                    'label' => 'Jumlah Penerimaan',
+                    'label' => 'Jumlah Pengeluaran',
                     'data' => $totals,
                     'backgroundColor' => 'rgba(75, 192, 192, 0.5)',
                     'borderColor' => 'rgba(75, 192, 192, 1)',

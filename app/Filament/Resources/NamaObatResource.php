@@ -16,7 +16,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Contracts\Support\Htmlable;
 use App\Filament\Resources\NamaObatResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\NamaObatResource\Widgets\DetailObatChart;
+use App\Filament\Resources\NamaObatResource\Widgets\PenerimaanObatChart;
+use App\Filament\Resources\NamaObatResource\Widgets\PengeluaranObatChart;
 use App\Filament\Resources\NamaObatResource\Widgets\HistoryPenerimaanObat;
 use App\Filament\Resources\NamaObatResource\Widgets\HistoryPengeluaranObat;
 
@@ -149,7 +150,8 @@ class NamaObatResource extends Resource
         return [
             HistoryPenerimaanObat::class,
             HistoryPengeluaranObat::class,
-            DetailObatChart::class,
+            PenerimaanObatChart::class,
+            PengeluaranObatChart::class,
         ];
     }
 

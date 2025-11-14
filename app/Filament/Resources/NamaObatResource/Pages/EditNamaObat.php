@@ -6,7 +6,8 @@ use Filament\Actions;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
 use App\Filament\Resources\NamaObatResource;
-use App\Filament\Resources\NamaObatResource\Widgets\DetailObatChart;
+use App\Filament\Resources\NamaObatResource\Widgets\PenerimaanObatChart;
+use App\Filament\Resources\NamaObatResource\Widgets\PengeluaranObatChart;
 use App\Filament\Resources\NamaObatResource\Widgets\HistoryPenerimaanObat;
 use App\Filament\Resources\NamaObatResource\Widgets\HistoryPengeluaranObat;
 
@@ -35,7 +36,8 @@ class EditNamaObat extends EditRecord
         return [
             HistoryPenerimaanObat::class,
             HistoryPengeluaranObat::class,
-            DetailObatChart::class,
+            PenerimaanObatChart::class,
+            PengeluaranObatChart::class,
         ];
     }
 
