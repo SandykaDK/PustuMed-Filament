@@ -50,7 +50,7 @@ class AdminPanelProvider extends PanelProvider
                 Widgets\AccountWidget::class,
             ])
             ->spa()
-            ->databaseNotifications()
+            // ->databaseNotifications()
 
             ->unsavedChangesAlerts()
             ->databaseTransactions()

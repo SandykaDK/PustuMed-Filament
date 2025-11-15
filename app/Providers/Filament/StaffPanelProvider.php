@@ -49,7 +49,7 @@ class StaffPanelProvider extends PanelProvider
                 Widgets\AccountWidget::class,
             ])
             ->spa()
-            ->databaseNotifications()
+            // ->databaseNotifications()
 
             ->unsavedChangesAlerts()
             ->databaseTransactions()

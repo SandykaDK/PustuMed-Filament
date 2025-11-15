@@ -41,4 +41,14 @@ class NamaObat extends Model
     {
         return $this->hasOne(MinMax::class, 'nama_obat_id');
     }
+
+    public function stokObat()
+    {
+        return $this->hasMany(StokObat::class);
+    }
+
+    public function getTotalStokAttribute()
+    {
+        return $this->stokObat()->sum('stok');
+    }
 }

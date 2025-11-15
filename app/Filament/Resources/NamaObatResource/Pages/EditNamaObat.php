@@ -6,10 +6,7 @@ use Filament\Actions;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
 use App\Filament\Resources\NamaObatResource;
-use App\Filament\Resources\NamaObatResource\Widgets\PenerimaanObatChart;
-use App\Filament\Resources\NamaObatResource\Widgets\PengeluaranObatChart;
-use App\Filament\Resources\NamaObatResource\Widgets\HistoryPenerimaanObat;
-use App\Filament\Resources\NamaObatResource\Widgets\HistoryPengeluaranObat;
+use App\Filament\Resources\NamaObatResource\Widgets\DetailObatTable;
 
 class EditNamaObat extends EditRecord
 {
@@ -34,10 +31,7 @@ class EditNamaObat extends EditRecord
     protected function getFooterWidgets(): array
     {
         return [
-            HistoryPenerimaanObat::class,
-            HistoryPengeluaranObat::class,
-            PenerimaanObatChart::class,
-            PengeluaranObatChart::class,
+            //
         ];
     }
 

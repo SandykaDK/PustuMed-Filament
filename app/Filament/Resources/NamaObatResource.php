@@ -16,10 +16,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Contracts\Support\Htmlable;
 use App\Filament\Resources\NamaObatResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\NamaObatResource\Widgets\PenerimaanObatChart;
-use App\Filament\Resources\NamaObatResource\Widgets\PengeluaranObatChart;
-use App\Filament\Resources\NamaObatResource\Widgets\HistoryPenerimaanObat;
-use App\Filament\Resources\NamaObatResource\Widgets\HistoryPengeluaranObat;
+use App\Filament\Resources\NamaObatResource\Widgets\DetailObatTable;
 
 class NamaObatResource extends Resource
 {
@@ -28,7 +25,7 @@ class NamaObatResource extends Resource
     protected static ?string $navigationLabel = 'Daftar Obat';
     protected static ?string $pluralModelLabel = 'Daftar Obat';
     protected static ?string $navigationGroup = 'Master';
-    protected static ?int $navigationSort = 6;
+    protected static ?int $navigationSort = 5;
     protected static ?string $navigationBadgeTooltip = 'Jumlah Nama Obat';
     protected static ?string $recordTitleAttribute = 'nama_obat';
     public static function form(Form $form): Form
@@ -87,19 +84,29 @@ class NamaObatResource extends Resource
                     ->sortable(),
                 TextColumn::make('minMax.minimum_stock')
                     ->label('Stok Minimum')
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable()
+                    ->toggledHiddenByDefault(),
                 TextColumn::make('minMax.maximum_stock')
                     ->label('Stok Maksimum')
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable()
+                    ->toggledHiddenByDefault(),
                 TextColumn::make('minMax.safety_stock')
                     ->label('Safety Stock')
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable()
+                    ->toggledHiddenByDefault(),
                 TextColumn::make('minMax.reorder_point')
                     ->label('Reorder Point')
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable()
+                    ->toggledHiddenByDefault(),
                 TextColumn::make('minMax.lead_time')
                     ->label('Lead Time (hari)')
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable()
+                    ->toggledHiddenByDefault(),
             ])
             // ->headerActions([
             //     ExportAction::make()
@@ -148,10 +155,7 @@ class NamaObatResource extends Resource
     public static function getWidgets(): array
     {
         return [
-            HistoryPenerimaanObat::class,
-            HistoryPengeluaranObat::class,
-            PenerimaanObatChart::class,
-            PengeluaranObatChart::class,
+            //
         ];
     }
 

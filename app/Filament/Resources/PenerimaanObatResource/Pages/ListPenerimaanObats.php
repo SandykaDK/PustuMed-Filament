@@ -22,27 +22,4 @@ class ListPenerimaanObats extends ListRecords
                 ->color('success'),
         ];
     }
-
-    public function getTabs(): array
-    {
-        $years = PenerimaanObat::selectRaw('YEAR(tanggal_penerimaan) as year')
-            ->distinct()
-            ->orderBy('year', 'desc')
-            ->pluck('year');
-
-        $tabs = [];
-
-        $tabs['all'] = Tab::make('Semua')
-            ->modifyQueryUsing(fn (Builder $query) => $query);
-
-        foreach ($years as $year) {
-            $tabs[$year] = Tab::make("$year")
-                ->modifyQueryUsing(fn (Builder $query) =>
-                    $query->whereYear('tanggal_penerimaan', $year)
-                );
-        }
-
-        return $tabs;
-    }
-
 }

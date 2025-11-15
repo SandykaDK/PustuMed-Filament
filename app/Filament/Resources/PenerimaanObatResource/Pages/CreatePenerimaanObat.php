@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\PenerimaanObatResource\Pages;
 
+use App\Models\StokObat;
 use Illuminate\Support\Facades\DB;
 use Filament\Resources\Pages\CreateRecord;
 use App\Filament\Resources\PenerimaanObatResource;
@@ -14,6 +15,29 @@ class CreatePenerimaanObat extends CreateRecord
     {
         $this->calculateMinMaxStock();
         $this->updateStockFromPenerimaan();
+        $this->saveRecord();
+    }
+
+    protected function saveRecord(): void
+    {
+        $penerimaan = $this->record;
+
+        foreach ($penerimaan->detailPenerimaanObat as $detail) {
+            // Update atau buat stok_obat berdasarkan nama_obat_id dan tanggal_kadaluwarsa
+            StokObat::updateOrCreate(
+                [
+                    'nama_obat_id' => $detail->nama_obat_id,
+                    'tanggal_kadaluwarsa' => $detail->tanggal_kadaluwarsa,
+                    'no_batch' => $detail->no_batch,
+                ],
+                [
+                    'stok' => StokObat::where('nama_obat_id', $detail->nama_obat_id)
+                        ->where('tanggal_kadaluwarsa', $detail->tanggal_kadaluwarsa)
+                        ->where('no_batch', $detail->no_batch)
+                        ->value('stok') + $detail->jumlah_masuk ?? 0,
+                ]
+            );
+        }
     }
 
     protected function calculateMinMaxStock(): void

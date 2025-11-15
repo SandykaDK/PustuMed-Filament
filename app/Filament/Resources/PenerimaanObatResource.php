@@ -8,25 +8,25 @@ use Filament\Forms\Form;
 use Filament\Tables\Table;
 use App\Models\PenerimaanObat;
 use Filament\Resources\Resource;
+use Filament\Tables\Filters\Filter;
 use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Repeater;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\DatePicker;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\PenerimaanObatResource\Pages;
-use Filament\Forms\Components\Repeater;
 
 class PenerimaanObatResource extends Resource
 {
     protected static ?string $model = PenerimaanObat::class;
-
     protected static ?string $navigationIcon = 'heroicon-o-arrow-down-on-square-stack';
     protected static ?string $navigationLabel = 'Penerimaan Obat';
     protected static ?string $pluralModelLabel = 'Penerimaan Obat';
     protected static ?string $navigationGroup = 'Transaksi';
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 2;
     protected static ?string $navigationBadgeTooltip = 'Jumlah Penerimaan Obat';
 
 
@@ -111,16 +111,24 @@ class PenerimaanObatResource extends Resource
     {
         return $table
             ->columns([
+                // Tanggal Penerimaan
+                TextColumn::make('tanggal_penerimaan')
+                    ->label('Tanggal Masuk')
+                    ->sortable(),
+
                 // No. Batch
                 TextColumn::make('no_batch')
                     ->label('No. Batch')
                     ->sortable(),
 
-                // Tanggal Penerimaan
-                TextColumn::make('tanggal_penerimaan')
-                    ->label('Tanggal Masuk')
-                    ->sortable(),
-                    // ->toggleable(isToggledHiddenByDefault: true),
+                // Nama Obat
+                TextColumn::make('detailPenerimaanObat.namaObat.nama_obat')
+                    ->label('Nama Obat')
+                    ->getStateUsing(function ($record) {
+                        return $record->detailPenerimaanObat
+                            ->pluck('namaObat.nama_obat')
+                            ->join(', ');
+                }),
 
                 // Total Jumlah Obat Masuk
                 TextColumn::make('total_jumlah_masuk')
@@ -128,9 +136,32 @@ class PenerimaanObatResource extends Resource
                     ->getStateUsing(function ($record) {
                         return $record->detailPenerimaanObat->sum('jumlah_masuk');
                     }),
+
+                // Keterangan
+                TextColumn::make('keterangan')
+                    ->label('Keterangan')
+                    ->toggleable(),
             ])
             ->filters([
-                Tables\Filters\TrashedFilter::make(),
+                Filter::make('tanggal_penerimaan')
+                    ->form([
+                        DatePicker::make('tanggal_dari')
+                            ->label('Tanggal Dari'),
+                        DatePicker::make('tanggal_sampai')
+                            ->label('Tanggal Sampai'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['tanggal_dari'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('tanggal_penerimaan', '>=', $date),
+                            )
+                            ->when(
+                                $data['tanggal_sampai'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('tanggal_penerimaan', '<=', $date),
+                            );
+                    }),
+                // Tables\Filters\TrashedFilter::make(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

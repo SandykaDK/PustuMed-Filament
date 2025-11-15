@@ -4,10 +4,13 @@ namespace App\Filament\Resources;
 
 use Filament\Tables;
 use App\Models\NamaObat;
+use App\Models\StokObat;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use App\Models\PengeluaranObat;
+use App\Models\JenisPengeluaran;
 use Filament\Resources\Resource;
+use Filament\Tables\Filters\Filter;
 use App\Models\DetailPenerimaanObat;
 use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Select;
@@ -16,6 +19,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\DatePicker;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\PengeluaranObatResource\Pages;
 
@@ -26,7 +30,7 @@ class PengeluaranObatResource extends Resource
     protected static ?string $navigationLabel = 'Pengeluaran Obat';
     protected static ?string $pluralModelLabel = 'Pengeluaran Obat';
     protected static ?string $navigationGroup = 'Transaksi';
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 3;
     protected static ?string $navigationBadgeTooltip = 'Jumlah Pengeluaran Obat';
 
     public static function form(Form $form): Form
@@ -83,11 +87,12 @@ class PengeluaranObatResource extends Resource
                             ->options(function ($get) {
                                 $namaObatId = $get('nama_obat_id');
                                 if (!$namaObatId) return [];
-                                return DetailPenerimaanObat::where('nama_obat_id', $namaObatId)
-                                    ->where('jumlah_masuk', '>', 0)
+
+                                return StokObat::where('nama_obat_id', $namaObatId)
+                                    ->where('stok', '>', 0)
                                     ->get()
                                     ->mapWithKeys(function ($item) {
-                                        $label = date('d-m-Y', strtotime($item->tanggal_kadaluwarsa));
+                                        $label = date('d-m-Y', strtotime($item->tanggal_kadaluwarsa)) . " (Stok: {$item->stok})";
                                         return [$item->id => $label];
                                     })->toArray();
                             })
@@ -107,6 +112,46 @@ class PengeluaranObatResource extends Resource
                         TextInput::make('jumlah_keluar')
                             ->label('Jumlah Keluar')
                             ->numeric()
+                            ->minValue(1)
+                            ->reactive()
+                            ->helperText(function ($get) {
+                                $stokObatId = $get('detail_penerimaan_obat_id');
+                                if (!$stokObatId) return 'Pilih tanggal kadaluwarsa terlebih dahulu';
+
+                                $stokObat = StokObat::find($stokObatId);
+                                if (!$stokObat) return '';
+
+                                $stokTersedia = $stokObat->stok ?? 0;
+                                $tglKadaluwarsa = date('d-m-Y', strtotime($stokObat->tanggal_kadaluwarsa));
+
+                                return "Stok tersedia: {$stokTersedia} (Kadaluwarsa: {$tglKadaluwarsa})";
+                            })
+                            ->rules([
+                                function ($get) {
+                                    return function ($attribute, $value, $fail) use ($get) {
+                                        $stokObatId = $get('detail_penerimaan_obat_id');
+                                        $jumlahKeluar = (int) $value;
+
+                                        if (!$stokObatId || !$value) {
+                                            return;
+                                        }
+
+                                        $stokObat = StokObat::find($stokObatId);
+                                        if (!$stokObat) {
+                                            $fail('Tanggal kadaluwarsa tidak valid.');
+                                            return;
+                                        }
+
+                                        $stokTersedia = $stokObat->stok ?? 0;
+                                        $namaObat = $stokObat->namaObat->nama_obat ?? 'Obat';
+                                        $tglKadaluwarsa = date('d-m-Y', strtotime($stokObat->tanggal_kadaluwarsa));
+
+                                        if ($jumlahKeluar > $stokTersedia) {
+                                            $fail("Obat '{$namaObat}' dengan tanggal kadaluwarsa {$tglKadaluwarsa} hanya memiliki stok {$stokTersedia}. Tidak bisa mengeluarkan {$jumlahKeluar}.");
+                                        }
+                                    };
+                                },
+                            ])
                             ->required(),
 
                         // Lokasi Penyimpanan
@@ -126,15 +171,23 @@ class PengeluaranObatResource extends Resource
     {
         return $table
             ->columns([
-                // No. Batch
-                TextColumn::make('no_batch')
-                    ->label('No. Batch')
-                    ->sortable(),
-
                 // Tanggal Pengeluaran
                 TextColumn::make('tanggal_pengeluaran')
                     ->label('Tanggal Pengeluaran')
                     ->sortable(),
+
+                // No. Batch
+                TextColumn::make('no_batch')
+                    ->label('No. Batch')
+                    ->sortable(),
+                // Nama Obat
+                TextColumn::make('detailPengeluaranObat.namaObat.nama_obat')
+                    ->label('Nama Obat')
+                    ->getStateUsing(function ($record) {
+                        return $record->detailPengeluaranObat
+                            ->pluck('namaObat.nama_obat')
+                            ->join(', ');
+                    }),
 
                 // Total Jumlah Obat Keluar
                 TextColumn::make('total_jumlah_keluar')
@@ -146,14 +199,36 @@ class PengeluaranObatResource extends Resource
                 // Tujuan Pengeluaran
                 TextColumn::make('tujuan_pengeluaran')
                     ->label('Tujuan Pengeluaran')
+                    ->formatStateUsing(function ($state) {
+                        return $state ? JenisPengeluaran::find($state)->jenis_pengeluaran : '-';
+                    })
                     ->sortable(),
 
                 // Keterangan
                 TextColumn::make('keterangan')
                     ->label('Keterangan')
+                    ->toggleable(),
             ])
             ->filters([
-                Tables\Filters\TrashedFilter::make(),
+                Filter::make('tanggal_penerimaan')
+                    ->form([
+                        DatePicker::make('tanggal_dari')
+                            ->label('Tanggal Dari'),
+                        DatePicker::make('tanggal_sampai')
+                            ->label('Tanggal Sampai'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['tanggal_dari'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('tanggal_pengeluaran', '>=', $date),
+                            )
+                            ->when(
+                                $data['tanggal_sampai'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('tanggal_pengeluaran', '<=', $date),
+                            );
+                    }),
+                // Tables\Filters\TrashedFilter::make(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

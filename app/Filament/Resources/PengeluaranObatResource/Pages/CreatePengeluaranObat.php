@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\PengeluaranObatResource\Pages;
 
+use App\Models\NamaObat;
+use App\Models\StokObat;
 use Illuminate\Support\Facades\DB;
 use Filament\Resources\Pages\CreateRecord;
 use App\Filament\Resources\PengeluaranObatResource;
@@ -14,6 +16,36 @@ class CreatePengeluaranObat extends CreateRecord
     {
         $this->calculateMinMaxStock();
         $this->updateStockFromPengeluaran();
+    }
+
+    protected function updateStockFromPengeluaran(): void
+    {
+        $pengeluaran = $this->record;
+
+        if (!$pengeluaran->detailPengeluaranObat) {
+            return;
+        }
+
+        foreach ($pengeluaran->detailPengeluaranObat as $detail) {
+            $stokObatId = $detail->detail_penerimaan_obat_id;
+            $namaObatId = $detail->nama_obat_id;
+            $qty = (int) ($detail->jumlah_keluar ?? 0);
+
+            if (!$stokObatId || !$namaObatId || $qty <= 0) {
+                continue;
+            }
+
+            // Kurangi stok dari stok_obat
+            StokObat::find($stokObatId)?->decrement('stok', $qty);
+
+            // Update total stok di nama_obat
+            $totalStokNamaObat = StokObat::where('nama_obat_id', $namaObatId)
+                ->sum('stok');
+
+            NamaObat::find($namaObatId)?->update([
+                'stok' => $totalStokNamaObat,
+            ]);
+        }
     }
 
     protected function calculateMinMaxStock(): void
@@ -67,29 +99,6 @@ class CreatePengeluaranObat extends CreateRecord
                     'lead_time' => $leadTime,
                 ]
             );
-        }
-    }
-
-    protected function updateStockFromPengeluaran(): void
-    {
-        $pengeluaran = $this->record;
-
-        if (! $pengeluaran->detailPengeluaranObat) {
-            return;
-        }
-
-        foreach ($pengeluaran->detailPengeluaranObat as $detail) {
-            $namaObatId = $detail->nama_obat_id ?? ($detail->namaObat->id ?? null);
-            $qty = (int) ($detail->jumlah_keluar ?? $detail->jumlah ?? 0);
-
-            if (! $namaObatId || $qty <= 0) {
-                continue;
-            }
-
-            // Kurangi stok tapi jangan negatif — gunakan GREATEST untuk safety (MySQL)
-            DB::table('nama_obat')
-                ->where('id', $namaObatId)
-                ->update(['stok' => DB::raw("GREATEST(stok - {$qty}, 0)")]);
         }
     }
 

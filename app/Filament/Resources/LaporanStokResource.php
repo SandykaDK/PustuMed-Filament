@@ -19,7 +19,7 @@ class LaporanStokResource extends Resource
     protected static ?string $navigationLabel = 'Laporan Stok';
     protected static ?string $pluralModelLabel = 'Laporan Stok';
     protected static ?string $navigationGroup = 'Laporan';
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 4;
     protected static ?string $navigationBadgeTooltip = 'Jumlah Laporan Stok';
 
     public static function form(Form $form): Form
