@@ -12,6 +12,11 @@ class EditNamaObat extends EditRecord
 {
     protected static string $resource = NamaObatResource::class;
 
+    public function getTitle(): string
+    {
+        return 'Ubah Daftar Obat';
+    }
+
     protected function getHeaderActions(): array
     {
         return [

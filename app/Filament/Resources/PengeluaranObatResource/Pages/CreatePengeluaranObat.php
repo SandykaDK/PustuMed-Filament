@@ -12,6 +12,11 @@ class CreatePengeluaranObat extends CreateRecord
 {
     protected static string $resource = PengeluaranObatResource::class;
 
+    public function getTitle(): string
+    {
+        return 'Tambah Pengeluaran Obat';
+    }
+
     protected function afterCreate(): void
     {
         $this->calculateMinMaxStock();

@@ -16,7 +16,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Contracts\Support\Htmlable;
 use App\Filament\Resources\NamaObatResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\NamaObatResource\Widgets\DetailObatTable;
 
 class NamaObatResource extends Resource
 {
@@ -25,7 +24,7 @@ class NamaObatResource extends Resource
     protected static ?string $navigationLabel = 'Daftar Obat';
     protected static ?string $pluralModelLabel = 'Daftar Obat';
     protected static ?string $navigationGroup = 'Master';
-    protected static ?int $navigationSort = 5;
+    protected static ?int $navigationSort = 6;
     protected static ?string $navigationBadgeTooltip = 'Jumlah Nama Obat';
     protected static ?string $recordTitleAttribute = 'nama_obat';
     public static function form(Form $form): Form

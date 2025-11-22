@@ -10,6 +10,12 @@ use App\Filament\Resources\NamaObatResource;
 class CreateNamaObat extends CreateRecord
 {
     protected static string $resource = NamaObatResource::class;
+
+    public function getTitle(): string
+    {
+        return 'Tambah Daftar Obat';
+    }
+
     protected function afterCreate()
     {
         LaporanStok::create([

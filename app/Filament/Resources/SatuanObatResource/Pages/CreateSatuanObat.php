@@ -9,6 +9,12 @@ use App\Filament\Resources\SatuanObatResource;
 class CreateSatuanObat extends CreateRecord
 {
     protected static string $resource = SatuanObatResource::class;
+
+    public function getTitle(): string
+    {
+        return 'Tambah Satuan Obat';
+    }
+
     protected function getCreatedNotification(): ?Notification
     {
         return Notification::make()

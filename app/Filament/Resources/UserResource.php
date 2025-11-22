@@ -14,7 +14,6 @@ use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Contracts\Support\Htmlable;
 use App\Filament\Resources\UserResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
@@ -47,14 +46,16 @@ class UserResource extends Resource
                     ->unique(ignoreRecord: true),
                 TextInput::make('password')
                     ->label('Password')
+                    ->suffixIcon('heroicon-m-key')
                     ->password()
-                    ->helperText('Kosongkan jika tidak ingin mengganti password.')
+                    ->helperText(fn (string $operation) => $operation === 'edit' ? 'Kosongkan jika tidak ingin mengganti password.' : null)
                     ->dehydrateStateUsing(fn (string $state): string => Hash::make($state))
                     ->dehydrated(fn (?string $state): bool => filled($state))
                     ->required(fn (string $operation): bool => $operation === 'create')
                     ->maxLength(255),
                 Select::make('role')
                     ->label('Jabatan')
+                    ->suffixIcon('heroicon-m-briefcase')
                     ->options([
                         'petugas_pustu' => 'Petugas Pustu',
                         'kepala_pustu' => 'Kepala Pustu',

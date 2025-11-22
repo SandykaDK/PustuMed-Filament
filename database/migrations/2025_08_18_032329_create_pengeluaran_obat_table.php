@@ -12,8 +12,9 @@ return new class extends Migration
             $table->id();
             $table->string('no_batch');
             $table->date('tanggal_pengeluaran');
-            $table->string('tujuan_pengeluaran');
+            $table->enum('tujuan_pengeluaran', ['pengobatan_pasien', 'kadaluwarsa']);
             $table->foreignId('user_id')->constrained('users', 'id');
+            $table->foreignId('pasien_id')->constrained('pasien', 'id');
             $table->string('keterangan')->nullable();
             $table->softDeletes();
             $table->timestamps();

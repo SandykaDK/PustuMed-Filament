@@ -14,6 +14,7 @@ class PengeluaranObat extends Model
         'tanggal_pengeluaran',
         'tujuan_pengeluaran',
         'user_id',
+        'pasien_id',
         'keterangan'
     ];
     public $timestamps = true;
@@ -34,14 +35,14 @@ class PengeluaranObat extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
+    public function Pasien()
+    {
+        return $this->belongsTo(Pasien::class, 'pasien_id');
+    }
+
     public function detailPengeluaranObat()
     {
         return $this->hasMany(DetailPengeluaranObat::class, foreignKey: 'pengeluaran_obat_id');
-    }
-
-    public function jenisPengeluaran()
-    {
-        return $this->hasMany(JenisPengeluaran::class, 'jenis_pengeluaran_id');
     }
 
     // public function detailPenerimaanObat()

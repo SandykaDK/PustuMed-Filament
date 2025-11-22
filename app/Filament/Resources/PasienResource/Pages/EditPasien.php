@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Filament\Resources\JenisPengeluaranResource\Pages;
+namespace App\Filament\Resources\PasienResource\Pages;
 
+use App\Filament\Resources\PasienResource;
 use Filament\Actions;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
-use App\Filament\Resources\JenisPengeluaranResource;
 
-class EditJenisPengeluaran extends EditRecord
+class EditPasien extends EditRecord
 {
-    protected static string $resource = JenisPengeluaranResource::class;
+    protected static string $resource = PasienResource::class;
 
     protected function getHeaderActions(): array
     {
@@ -25,6 +25,6 @@ class EditJenisPengeluaran extends EditRecord
         return Notification::make()
             ->success()
             ->title('Success')
-            ->body('Data Jenis Pengeluaran berhasil disimpan');
+            ->body('Data Pasien berhasil disimpan');
     }
 }

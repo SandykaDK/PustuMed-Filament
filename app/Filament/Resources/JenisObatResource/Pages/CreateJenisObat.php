@@ -9,6 +9,12 @@ use App\Filament\Resources\JenisObatResource;
 class CreateJenisObat extends CreateRecord
 {
     protected static string $resource = JenisObatResource::class;
+
+    public function getTitle(): string
+    {
+        return 'Tambah Jenis Obat';
+    }
+
     protected function getCreatedNotification(): ?Notification
     {
         return Notification::make()

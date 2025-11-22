@@ -10,6 +10,11 @@ class CreateUser extends CreateRecord
 {
     protected static string $resource = UserResource::class;
 
+    public function getTitle(): string
+    {
+        return 'Tambah User';
+    }
+
     protected function getCreatedNotification(): ?Notification
     {
         return Notification::make()

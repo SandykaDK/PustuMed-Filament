@@ -8,11 +8,13 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('jenis_pengeluaran', function (Blueprint $table) {
+        Schema::create('pasien', function (Blueprint $table) {
             $table->id();
-            $table->string('kode_pengeluaran')->unique();
-            $table->string('jenis_pengeluaran');
-            $table->string('keterangan')->nullable();
+            $table->string('nama')->unique();
+            $table->string('nik')->unique();
+            $table->string('alamat');
+            $table->string('no_telepon')->unique();
+            $table->string('no_bpjs')->unique()->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
@@ -20,6 +22,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('jenis_pengeluaran');
+        Schema::dropIfExists('pasien');
     }
 };

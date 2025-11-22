@@ -8,10 +8,8 @@ use App\Models\StokObat;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use App\Models\PengeluaranObat;
-use App\Models\JenisPengeluaran;
 use Filament\Resources\Resource;
 use Filament\Tables\Filters\Filter;
-use App\Models\DetailPenerimaanObat;
 use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Repeater;
@@ -19,7 +17,6 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\DatePicker;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\PengeluaranObatResource\Pages;
 
@@ -51,10 +48,20 @@ class PengeluaranObatResource extends Resource
                     // ->disabled()
                     ->required(),
 
+                // Pasien
+                Select::make('pasien_id')
+                    ->label('Pasien')
+                    ->relationship('pasien', 'nama')
+                    ->suffixIcon('heroicon-m-user')
+                    ->nullable(),
+
                 // Tujuan Pengeluaran
                 Select::make('tujuan_pengeluaran')
                     ->label('Tujuan Pengeluaran')
-                    ->relationship('jenisPengeluaran', 'jenis_pengeluaran')
+                    ->options([
+                        'pengobatan_pasien' => 'Pengobatan Pasien',
+                        'kadaluwarsa' => 'Kadaluwarsa',
+                    ])
                     ->required(),
 
                 // Keterangan
@@ -195,14 +202,6 @@ class PengeluaranObatResource extends Resource
                     ->getStateUsing(function ($record) {
                         return $record->detailPengeluaranObat->sum('jumlah_keluar');
                     }),
-
-                // Tujuan Pengeluaran
-                TextColumn::make('tujuan_pengeluaran')
-                    ->label('Tujuan Pengeluaran')
-                    ->formatStateUsing(function ($state) {
-                        return $state ? JenisPengeluaran::find($state)->jenis_pengeluaran : '-';
-                    })
-                    ->sortable(),
 
                 // Keterangan
                 TextColumn::make('keterangan')
