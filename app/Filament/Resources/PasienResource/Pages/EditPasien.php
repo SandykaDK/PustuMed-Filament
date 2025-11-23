@@ -27,4 +27,9 @@ class EditPasien extends EditRecord
             ->title('Success')
             ->body('Data Pasien berhasil disimpan');
     }
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }

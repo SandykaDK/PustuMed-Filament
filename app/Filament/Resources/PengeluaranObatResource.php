@@ -149,12 +149,30 @@ class PengeluaranObatResource extends Resource
                                             return;
                                         }
 
+                                        // cek apakah ini edit item yang sudah ada di DB
+                                        $detailId = $get('id') ?? $get('detail_pengeluaran_obat_id') ?? null;
+                                        $originalJumlah = 0;
+                                        $originalDetail = null;
+
+                                        if ($detailId) {
+                                            $originalDetail = \App\Models\DetailPengeluaranObat::find($detailId);
+                                            if ($originalDetail) {
+                                                $originalJumlah = (int) ($originalDetail->jumlah_keluar ?? 0);
+                                            }
+                                        }
+
                                         $stokTersedia = $stokObat->stok ?? 0;
                                         $namaObat = $stokObat->namaObat->nama_obat ?? 'Obat';
                                         $tglKadaluwarsa = date('d-m-Y', strtotime($stokObat->tanggal_kadaluwarsa));
 
-                                        if ($jumlahKeluar > $stokTersedia) {
-                                            $fail("Obat '{$namaObat}' dengan tanggal kadaluwarsa {$tglKadaluwarsa} hanya memiliki stok {$stokTersedia}. Tidak bisa mengeluarkan {$jumlahKeluar}.");
+                                        // jika edit dan menggunakan batch yang sama, izinkan sampai stokTersedia + originalJumlah
+                                        $allowed = $stokTersedia;
+                                        if ($originalDetail && ($originalDetail->detail_penerimaan_obat_id ?? $originalDetail->detail_penerimaan_obat_id) == $stokObat->id) {
+                                            $allowed = $stokTersedia + $originalJumlah;
+                                        }
+
+                                        if ($jumlahKeluar > $allowed) {
+                                            $fail("Obat '{$namaObat}' dengan tanggal kadaluwarsa {$tglKadaluwarsa} hanya memiliki stok {$stokTersedia}" . ($originalJumlah ? " (termasuk {$originalJumlah} yang sudah dialokasikan pada pengeluaran ini)" : '') . ". Tidak bisa mengeluarkan {$jumlahKeluar}.");
                                         }
                                     };
                                 },
@@ -187,6 +205,13 @@ class PengeluaranObatResource extends Resource
                 TextColumn::make('no_batch')
                     ->label('No. Batch')
                     ->sortable(),
+
+                // Nama Pasien
+                TextColumn::make('pasien.nama')
+                    ->label('Nama Pasien')
+                    ->sortable()
+                    ->searchable(),
+
                 // Nama Obat
                 TextColumn::make('detailPengeluaranObat.namaObat.nama_obat')
                     ->label('Nama Obat')
@@ -194,7 +219,9 @@ class PengeluaranObatResource extends Resource
                         return $record->detailPengeluaranObat
                             ->pluck('namaObat.nama_obat')
                             ->join(', ');
-                    }),
+                    })
+                    ->sortable()
+                    ->searchable(),
 
                 // Total Jumlah Obat Keluar
                 TextColumn::make('total_jumlah_keluar')
@@ -227,7 +254,6 @@ class PengeluaranObatResource extends Resource
                                 fn (Builder $query, $date): Builder => $query->whereDate('tanggal_pengeluaran', '<=', $date),
                             );
                     }),
-                // Tables\Filters\TrashedFilter::make(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -236,8 +262,6 @@ class PengeluaranObatResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
-                    Tables\Actions\ForceDeleteBulkAction::make(),
-                    Tables\Actions\RestoreBulkAction::make(),
                 ]),
             ]);
     }
@@ -256,14 +280,6 @@ class PengeluaranObatResource extends Resource
             'create' => Pages\CreatePengeluaranObat::route('/create'),
             'edit' => Pages\EditPengeluaranObat::route('/{record}/edit'),
         ];
-    }
-
-    public static function getEloquentQuery(): Builder
-    {
-        return parent::getEloquentQuery()
-            ->withoutGlobalScopes([
-                SoftDeletingScope::class,
-            ]);
     }
 
     public static function getNavigationBadge(): ?string

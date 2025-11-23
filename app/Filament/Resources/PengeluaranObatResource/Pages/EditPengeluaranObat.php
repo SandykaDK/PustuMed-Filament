@@ -11,10 +11,48 @@ class EditPengeluaranObat extends EditRecord
 {
     protected static string $resource = PengeluaranObatResource::class;
 
+    protected function beforeSave(): void
+    {
+        $this->restoreStockFromPengeluaran();
+    }
+
     protected function afterSave(): void
     {
         $this->updateStockFromPengeluaran();
         $this->calculateMinMaxStock();
+    }
+
+    protected function restoreStockFromPengeluaran(): void
+    {
+        $pengeluaran = $this->record->loadMissing('detailPengeluaranObat.namaObat');
+
+        if (! $pengeluaran->detailPengeluaranObat) {
+            return;
+        }
+
+        foreach ($pengeluaran->detailPengeluaranObat as $detail) {
+            $namaObatId = $detail->nama_obat_id ?? ($detail->namaObat->id ?? null);
+            $stokObatId = $detail->detail_penerimaan_obat_id ?? null;
+            $qty = (int) ($detail->jumlah_keluar ?? 0);
+
+            if ($qty <= 0) {
+                continue;
+            }
+
+            // kembalikan stok pada batch (stok_obat) jika tersedia
+            if ($stokObatId) {
+                DB::table('stok_obat')
+                    ->where('id', $stokObatId)
+                    ->update(['stok' => DB::raw("stok + {$qty}")]);
+            }
+
+            // kembalikan stok total pada nama_obat juga (tetap jaga konsistensi)
+            if ($namaObatId) {
+                DB::table('nama_obat')
+                    ->where('id', $namaObatId)
+                    ->update(['stok' => DB::raw("stok + {$qty}")]);
+            }
+        }
     }
 
     protected function calculateMinMaxStock(): void
@@ -63,7 +101,8 @@ class EditPengeluaranObat extends EditRecord
 
     protected function updateStockFromPengeluaran(): void
     {
-        $pengeluaran = $this->record;
+        // ambil ulang record dengan relasi terbaru setelah save
+        $pengeluaran = $this->record->fresh('detailPengeluaranObat.namaObat');
 
         if (! $pengeluaran->detailPengeluaranObat) {
             return;
@@ -71,15 +110,26 @@ class EditPengeluaranObat extends EditRecord
 
         foreach ($pengeluaran->detailPengeluaranObat as $detail) {
             $namaObatId = $detail->nama_obat_id ?? ($detail->namaObat->id ?? null);
-            $qty = (int) ($detail->jumlah_keluar ?? $detail->jumlah ?? 0);
+            $stokObatId = $detail->detail_penerimaan_obat_id ?? null;
+            $qty = (int) ($detail->jumlah_keluar ?? 0);
 
-            if (! $namaObatId || $qty <= 0) {
+            if ($qty <= 0) {
                 continue;
             }
 
-            DB::table('nama_obat')
-                ->where('id', $namaObatId)
-                ->update(['stok' => DB::raw("GREATEST(stok - {$qty}, 0)")]);
+            // kurangi stok pada batch (stok_obat)
+            if ($stokObatId) {
+                DB::table('stok_obat')
+                    ->where('id', $stokObatId)
+                    ->update(['stok' => DB::raw("GREATEST(stok - {$qty}, 0)")]);
+            }
+
+            // kurangi stok total pada nama_obat juga
+            if ($namaObatId) {
+                DB::table('nama_obat')
+                    ->where('id', $namaObatId)
+                    ->update(['stok' => DB::raw("GREATEST(stok - {$qty}, 0)")]);
+            }
         }
     }
 
@@ -112,6 +162,13 @@ class EditPengeluaranObat extends EditRecord
     {
         return [
             Actions\DeleteAction::make(),
+            Actions\ForceDeleteAction::make(),
+            Actions\RestoreAction::make(),
         ];
+    }
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
     }
 }
