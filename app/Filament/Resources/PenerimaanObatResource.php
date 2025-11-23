@@ -121,6 +121,12 @@ class PenerimaanObatResource extends Resource
                     ->label('No. Batch')
                     ->sortable(),
 
+                // Nama User
+                TextColumn::make('user.name')
+                    ->label('Petugas Penerima')
+                    ->sortable()
+                    ->searchable(),
+
                 // Nama Obat
                 TextColumn::make('detailPenerimaanObat.namaObat.nama_obat')
                     ->label('Nama Obat')
@@ -140,7 +146,8 @@ class PenerimaanObatResource extends Resource
                 // Keterangan
                 TextColumn::make('keterangan')
                     ->label('Keterangan')
-                    ->toggleable(),
+                    ->toggleable()
+                    ->toggledHiddenByDefault(),
             ])
             ->filters([
                 Filter::make('tanggal_penerimaan')
@@ -164,7 +171,8 @@ class PenerimaanObatResource extends Resource
                 // Tables\Filters\TrashedFilter::make(),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                // Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
@@ -188,7 +196,8 @@ class PenerimaanObatResource extends Resource
         return [
             'index' => Pages\ListPenerimaanObats::route('/'),
             'create' => Pages\CreatePenerimaanObat::route('/create'),
-            'edit' => Pages\EditPenerimaanObat::route('/{record}/edit'),
+            // 'edit' => Pages\EditPenerimaanObat::route('/{record}/edit'),
+            // 'view' => Pages\ViewPenerimaanObat::route('/{record}'),
         ];
     }
 

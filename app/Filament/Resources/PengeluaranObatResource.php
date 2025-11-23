@@ -17,7 +17,6 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\DatePicker;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\PengeluaranObatResource\Pages;
 
 class PengeluaranObatResource extends Resource
@@ -233,7 +232,8 @@ class PengeluaranObatResource extends Resource
                 // Keterangan
                 TextColumn::make('keterangan')
                     ->label('Keterangan')
-                    ->toggleable(),
+                    ->toggleable()
+                    ->toggledHiddenByDefault(),
             ])
             ->filters([
                 Filter::make('tanggal_penerimaan')
@@ -256,13 +256,14 @@ class PengeluaranObatResource extends Resource
                     }),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                // Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                // Tables\Actions\BulkActionGroup::make([
+                //     // Tables\Actions\DeleteBulkAction::make(),
+                // ]),
             ]);
     }
 
@@ -278,7 +279,7 @@ class PengeluaranObatResource extends Resource
         return [
             'index' => Pages\ListPengeluaranObats::route('/'),
             'create' => Pages\CreatePengeluaranObat::route('/create'),
-            'edit' => Pages\EditPengeluaranObat::route('/{record}/edit'),
+            // 'edit' => Pages\EditPengeluaranObat::route('/{record}/edit'),
         ];
     }
 

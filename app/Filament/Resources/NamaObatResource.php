@@ -84,28 +84,28 @@ class NamaObatResource extends Resource
                 TextColumn::make('minMax.minimum_stock')
                     ->label('Stok Minimum')
                     ->sortable()
-                    ->toggleable()
-                    ->toggledHiddenByDefault(),
+                    ->toggleable(),
+                    // ->toggledHiddenByDefault(),
                 TextColumn::make('minMax.maximum_stock')
                     ->label('Stok Maksimum')
                     ->sortable()
-                    ->toggleable()
-                    ->toggledHiddenByDefault(),
+                    ->toggleable(),
+                    // ->toggledHiddenByDefault(),
                 TextColumn::make('minMax.safety_stock')
                     ->label('Safety Stock')
                     ->sortable()
-                    ->toggleable()
-                    ->toggledHiddenByDefault(),
+                    ->toggleable(),
+                    // ->toggledHiddenByDefault(),
                 TextColumn::make('minMax.reorder_point')
                     ->label('Reorder Point')
                     ->sortable()
-                    ->toggleable()
-                    ->toggledHiddenByDefault(),
+                    ->toggleable(),
+                    // ->toggledHiddenByDefault(),
                 TextColumn::make('minMax.lead_time')
                     ->label('Lead Time (hari)')
                     ->sortable()
-                    ->toggleable()
-                    ->toggledHiddenByDefault(),
+                    ->toggleable(),
+                    // ->toggledHiddenByDefault(),
             ])
             // ->headerActions([
             //     ExportAction::make()
