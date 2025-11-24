@@ -96,15 +96,69 @@ class PengeluaranObatResource extends Resource
 
                                 return StokObat::where('nama_obat_id', $namaObatId)
                                     ->where('stok', '>', 0)
+                                    ->where('tanggal_kadaluwarsa', '>=', now()) // Filter untuk yang belum kadaluwarsa
+                                    ->orderBy('tanggal_kadaluwarsa')
                                     ->get()
                                     ->mapWithKeys(function ($item) {
                                         $label = date('d-m-Y', strtotime($item->tanggal_kadaluwarsa)) . " (Stok: {$item->stok})";
                                         return [$item->id => $label];
                                     })->toArray();
                             })
-                            ->reactive()
-                            ->required(),
+                            ->rules([
+                                function ($get) {
+                                    return function ($attribute, $value, $fail) use ($get) {
+                                        $namaObatId = $get('nama_obat_id');
+                                        if (!$namaObatId) {
+                                            $fail('Pilih nama obat terlebih dahulu.');
+                                            return;
+                                        }
 
+                                        // tanggal kadaluwarsa terdekat yang belum kadaluwarsa
+                                        $nearest = StokObat::where('nama_obat_id', $namaObatId)
+                                            ->where('stok', '>', 0)
+                                            ->where('tanggal_kadaluwarsa', '>=', now())
+                                            ->orderBy('tanggal_kadaluwarsa')
+                                            ->first();
+
+                                        if (!$nearest) {
+                                            $fail('Tidak ada tanggal kadaluwarsa yang valid (belum lewat) untuk obat ini.');
+                                            return;
+                                        }
+
+                                        if (!$value) {
+                                            $fail('Pilih tanggal kadaluwarsa.');
+                                            return;
+                                        }
+
+                                        $selected = StokObat::find($value);
+                                        if (!$selected) {
+                                            $fail('Tanggal kadaluwarsa yang dipilih tidak valid.');
+                                            return;
+                                        }
+
+                                        if ($selected->id !== $nearest->id) {
+                                            $fail('Tanggal kadaluwarsa harus sesuai dengan tanggal kadaluwarsa terdekat: ' . date('d-m-Y', strtotime($nearest->tanggal_kadaluwarsa)) . '.');
+                                            return;
+                                        }
+                                    };
+                                },
+                            ])
+                            ->reactive()
+                            ->required()
+                            ->helperText(function ($get) {
+                                $namaObatId = $get('nama_obat_id');
+                                if (!$namaObatId) return 'Pilih nama obat terlebih dahulu.';
+
+                                $nearestExpiration = StokObat::where('nama_obat_id', $namaObatId)
+                                    ->where('stok', '>', 0)
+                                    ->where('tanggal_kadaluwarsa', '>=', now())
+                                    ->orderBy('tanggal_kadaluwarsa')
+                                    ->first();
+
+                                return $nearestExpiration
+                                    ? 'Tanggal kadaluwarsa terdekat: ' . date('d-m-Y', strtotime($nearestExpiration->tanggal_kadaluwarsa))
+                                    : 'Tidak ada obat yang tersedia.';
+                            }),
                         // Satuan Obat
                         Select::make('satuan_id')
                             ->label('Satuan Obat')
@@ -261,9 +315,9 @@ class PengeluaranObatResource extends Resource
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
-                // Tables\Actions\BulkActionGroup::make([
-                //     // Tables\Actions\DeleteBulkAction::make(),
-                // ]),
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                ]),
             ]);
     }
 

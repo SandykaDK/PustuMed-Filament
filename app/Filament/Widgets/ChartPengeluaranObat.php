@@ -6,10 +6,10 @@ use Illuminate\Support\Carbon;
 use Filament\Widgets\ChartWidget;
 use Illuminate\Support\Facades\DB;
 
-class ChartPenerimaanObat extends ChartWidget
+class ChartPengeluaranObat extends ChartWidget
 {
-    protected static ?string $heading = 'Penerimaan Obat';
-    protected static ?string $description = 'Ini adalah dashboard penerimaan obat.';
+    protected static ?string $heading = 'Pengeluaran Obat';
+    protected static ?string $description = 'Ini adalah dashboard pengeluaran obat.';
     protected static ?string $maxHeight = '300px';
     protected static ?string $pollingInterval = '5s';
     protected static bool $isLazy = true;
@@ -31,10 +31,10 @@ class ChartPenerimaanObat extends ChartWidget
                 $values[$h] = 0;
             }
 
-            $rows = DB::table('detail_penerimaan_obat')
-                ->join('penerimaan_obat', 'detail_penerimaan_obat.penerimaan_obat_id', '=', 'penerimaan_obat.id')
-                ->whereDate('penerimaan_obat.tanggal_penerimaan', Carbon::today())
-                ->selectRaw('HOUR(penerimaan_obat.tanggal_penerimaan) as hour, SUM(COALESCE(detail_penerimaan_obat.jumlah_masuk,0)) as total')
+            $rows = DB::table('detail_pengeluaran_obat')
+                ->join('pengeluaran_obat', 'detail_pengeluaran_obat.pengeluaran_obat_id', '=', 'pengeluaran_obat.id')
+                ->whereDate('pengeluaran_obat.tanggal_pengeluaran', Carbon::today())
+                ->selectRaw('HOUR(pengeluaran_obat.tanggal_pengeluaran) as hour, SUM(COALESCE(detail_pengeluaran_obat.jumlah_keluar,0)) as total')
                 ->groupBy('hour')
                 ->get();
 
@@ -53,10 +53,10 @@ class ChartPenerimaanObat extends ChartWidget
                 $period[$key] = 0;
             }
 
-            $rows = DB::table('detail_penerimaan_obat')
-                ->join('penerimaan_obat', 'detail_penerimaan_obat.penerimaan_obat_id', '=', 'penerimaan_obat.id')
+            $rows = DB::table('detail_pengeluaran_obat')
+                ->join('penerimaan_obat', 'detail_pengeluaran_obat.pengeluaran_obat_id', '=', 'penerimaan_obat.id')
                 ->whereDate('penerimaan_obat.tanggal_penerimaan', '>=', $start->toDateString())
-                ->selectRaw('DATE(penerimaan_obat.tanggal_penerimaan) as day, SUM(COALESCE(detail_penerimaan_obat.jumlah_masuk,0)) as total')
+                ->selectRaw('DATE(penerimaan_obat.tanggal_penerimaan) as day, SUM(COALESCE(detail_pengeluaran_obat.jumlah_masuk,0)) as total')
                 ->groupBy('day')
                 ->get();
 
@@ -75,10 +75,10 @@ class ChartPenerimaanObat extends ChartWidget
                 $period[$key] = 0;
             }
 
-            $rows = DB::table('detail_penerimaan_obat')
-                ->join('penerimaan_obat', 'detail_penerimaan_obat.penerimaan_obat_id', '=', 'penerimaan_obat.id')
-                ->whereDate('penerimaan_obat.tanggal_penerimaan', '>=', $start->toDateString())
-                ->selectRaw('DATE(penerimaan_obat.tanggal_penerimaan) as day, SUM(COALESCE(detail_penerimaan_obat.jumlah_masuk,0)) as total')
+            $rows = DB::table('detail_pengeluaran_obat')
+                ->join('pengeluaran_obat', 'detail_pengeluaran_obat.pengeluaran_obat_id', '=', 'pengeluaran_obat.id')
+                ->whereDate('pengeluaran_obat.tanggal_pengeluaran', '>=', $start->toDateString())
+                ->selectRaw('DATE(pengeluaran_obat.tanggal_pengeluaran) as day, SUM(COALESCE(detail_pengeluaran_obat.jumlah_keluar,0)) as total')
                 ->groupBy('day')
                 ->get();
 
@@ -86,7 +86,7 @@ class ChartPenerimaanObat extends ChartWidget
                 $period[$r->day] = (int)$r->total;
             }
             $data = array_values($period);
-        } else {
+        } elseif ($filter === 'year') {
             // year - per month
             $year = Carbon::now()->year;
             $months = [];
@@ -95,10 +95,10 @@ class ChartPenerimaanObat extends ChartWidget
                 $months[$m] = 0;
             }
 
-            $rows = DB::table('detail_penerimaan_obat')
-                ->join('penerimaan_obat', 'detail_penerimaan_obat.penerimaan_obat_id', '=', 'penerimaan_obat.id')
-                ->whereYear('penerimaan_obat.tanggal_penerimaan', $year)
-                ->selectRaw('MONTH(penerimaan_obat.tanggal_penerimaan) as month, SUM(COALESCE(detail_penerimaan_obat.jumlah_masuk,0)) as total')
+            $rows = DB::table('detail_pengeluaran_obat')
+                ->join('pengeluaran_obat', 'detail_pengeluaran_obat.pengeluaran_obat_id', '=', 'pengeluaran_obat.id')
+                ->whereYear('pengeluaran_obat.tanggal_pengeluaran', $year)
+                ->selectRaw('MONTH(pengeluaran_obat.tanggal_pengeluaran) as month, SUM(COALESCE(detail_pengeluaran_obat.jumlah_keluar,0)) as total')
                 ->groupBy('month')
                 ->get();
 
@@ -112,7 +112,7 @@ class ChartPenerimaanObat extends ChartWidget
             'labels' => $labels,
             'datasets' => [
                 [
-                    'label' => 'Jumlah Penerimaan Obat (pcs)',
+                    'label' => 'Jumlah Pengeluaran Obat (pcs)',
                     'data' => $data,
                     'backgroundColor' => '#36A2EB',
                     'borderColor' => '#9BD0F5',

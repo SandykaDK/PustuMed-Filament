@@ -29,7 +29,7 @@ class NamaObat extends Model
 
     public function jenisObat()
     {
-        return $this->belongsTo(JenisObat::class, 'jenis_obat_id');
+       return $this->belongsTo(JenisObat::class, 'jenis_obat_id')->withTrashed();
     }
 
     public function satuanObat()
